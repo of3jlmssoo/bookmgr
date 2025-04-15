@@ -119,7 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> get listGenre {
     List<Widget> result = [];
-    for (var v in BookGenre.values) {
+
+    for (var i = 0; i < BookGenre.values.length; i++) {
+      // for (var v in BookGenre.values) {
       // logger.i('listGenre() v:${v.name}');
       result.add(
         ElevatedButton(
@@ -128,10 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {
-            logger.i('list books');
+            logger.i('list books. number:$i --- genre ${BookGenre.values[i].name}');
             ListRegisteredBooksRoute().go(context);
           },
-          child: Text(v.name, style: TextStyle(color: Colors.black)),
+          // child: Text(v.name, style: TextStyle(color: Colors.black)),
+          child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
         ),
       );
     }
