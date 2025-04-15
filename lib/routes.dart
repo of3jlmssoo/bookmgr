@@ -26,3 +26,10 @@ class HomeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => MyApp();
 }
+
+@TypedGoRoute<SqlWorkRoute>(path: '/sqlwork')
+class SqlWorkRoute extends GoRouteData {
+  const SqlWorkRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) => SqlWorkScreen();
+}

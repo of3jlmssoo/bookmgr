@@ -76,7 +76,27 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text(widget.title)),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  onTap: () {
+                    logger.i("SQlite work tapped");
+                    SqlWorkRoute().go(context);
+                  },
+                  child: Text('SQLite work'),
+                ),
+                const PopupMenuItem(child: Text('another work')),
+              ];
+            },
+          ),
+          SizedBox(width: 100),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

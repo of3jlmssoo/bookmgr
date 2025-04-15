@@ -12,19 +12,40 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
+  Future<void> dropTable() async {
+    if (db == null) await openDB();
+    await db!.rawQuery('DROP TABLE IF EXISTS bookmgr_tbl');
+  }
+
+  Future<int> deleteAllRows() async {
+    if (db == null) await openDB();
+    return await db!.delete('bookmgr_tbl');
+  }
+
   Future<void> query() async {
     if (db == null) await openDB();
     try {
-      var list = await db!.query('exercise_list', columns: ['id', 'date', 'comment']);
-      logger.i("DP query() $list");
+      // id INTEGER,
+      // purchased INTEGER,
+      // date TEXT,
+      // title TEXT,
+      // author TEXT,
+      // publisher TEXT,
+      // genre
+      // memo Text,
+      var list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      for (var l in list) {
+        logger.i("DP query() $l");
+      }
+      logger.i('DP query() $list');
     } on DatabaseException catch (e) {
-      logger.e("DP query() ${e.toString()}");
+      logger.e("DP query() error ${e.toString()}");
     }
   }
 
   Future<void> testDataInsert() async {
     if (db == null) await openDB();
-    // testDataInserts(db!);
+    testDataInserts(db!);
 
     // try {
     //   await db!.transaction((txn) async {
@@ -39,22 +60,24 @@ class DatabaseProvider {
     // }
   }
 
-  Future<List<String>> getTableNames() async {
+  Future<List<String>> listTables() async {
     if (db == null) await openDB();
-    logger.i("DP getTableNames db : $db");
+    logger.i("DP listTables() db : $db");
     var tableNames = (await db!.query(
       'sqlite_master',
       where: 'type = ?',
       whereArgs: ['table'],
     )).map((row) => row['name'] as String).toList(growable: false)..sort();
+    logger.i('listTables() $tableNames');
     return tableNames;
   }
 
   Future<void> createTables() async {
-    // final String tablename = "dogs";
     if (db == null) await openDB();
     try {
-      // await db!.execute('CREATE TABLE exercise_list(id INTEGER, date TEXT, comment TEXT,PRIMARY KEY(id  AUTOINCREMENT))');
+      await db!.execute(
+        'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
+      );
 
       // await db!.execute(sqlExerciseList);
       // await db!.execute(sqlMuscleTrainingList);
@@ -65,44 +88,36 @@ class DatabaseProvider {
     } on DatabaseException catch (e) {
       logger.e("createTables() error ${e.toString()}");
     }
+    logger.i('DP createTables() executed');
   }
 
   Future<void> openDB() async {
-    db == null ? logger.i("DP openTable called. db : null path : $databasefile") : logger.i("DP openTable called. db : $db path : $databasefile");
+    db == null
+        ? logger.i("DP openDB() called. db : null, databasefile : $databasefile")
+        : logger.i("DP openDB() called. db : $db, databasefile : $databasefile");
     try {
-      logger.i("DP inside try");
-      // var databasesPath = await getDatabasesPath();
-      // var path = join(databasesPath, dbName);
+      Directory? dbPath;
+      if (Platform.isAndroid) {
+        dbPath = await getExternalStorageDirectory(); // /storage/emulated/0/Android/data/com.example.mysample/files/bookmgr_database.db
+      } else {
+        dbPath = await getTemporaryDirectory();
+      }
 
-      // final dbPath = await getDatabasesPath();
-      Directory? dbPath = await getExternalStorageDirectory();
-      // Future<Directory?> dbPath = await getExternalStorageDirectory();
-
-      // final path = join(dbPath!.path, databasefile);
       path = join(dbPath!.path, databasefile);
 
-      logger.i("openDB()  dbPath : $dbPath");
+      logger.i("openDB()  dbPath : $dbPath --- dbPath.runtimeType : ${dbPath.runtimeType} --- databasefile : $databasefile");
 
       db = await openDatabase(
         path,
-        // join(await getDatabasesPath(), databasefile),
-        // When the database is first created, create a table to store dogs.
-        // onCreate: (db, version) {
-        //   // Run the CREATE TABLE statement on the database.
-        //   return db.execute('CREATE TABLE $dbname(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)');
-        // },
         onConfigure: (Database db) async {
           await db.execute("PRAGMA foreign_keys = ON");
         },
-        // Set the version. This executes the onCreate function and provides a
-        // path to perform database upgrades and downgrades.
         version: 1,
       );
-      logger.i("DP openTable()1 database : $db");
+      logger.i("DP openDB() 1 db : $db");
     } on DatabaseException catch (e) {
-      logger.e("DP openTable()2 ${e.toString()}");
+      logger.e("DP openDB() error ${e.toString()}");
     }
-    logger.i("DP openTable()3 database : $db path : $databasefile");
   }
 
   // Future<int> countAllTask() async {
@@ -112,3 +127,73 @@ class DatabaseProvider {
   //   return count;
   // }
 }
+
+Future<void> testDataInserts(Database db) async {
+  // if (db == null) return;
+  try {
+    await db.transaction((txn) async {
+      await txn.insert('bookmgr_tbl', {
+        'purchased': 0,
+        'date': '2025-04-14',
+        'title': 'タイトル1',
+        'author': '著者1',
+        'publisher': '中公新書',
+        'genre': '経済',
+        'memo': 'コメント1',
+      });
+      await txn.insert('bookmgr_tbl', {
+        'purchased': 0,
+        'date': '2025-04-15',
+        'title': 'タイトル2',
+        'author': '著者2',
+        'publisher': 'ちくま新書',
+        'genre': '宗教',
+        'memo': 'コメント2',
+      });
+
+      await txn.insert('bookmgr_tbl', {
+        'purchased': 0,
+        'date': '2025-04-15',
+        'title': 'タイトル3',
+        'author': '著者3',
+        'publisher': 'ちくま新書',
+        'genre': '経済',
+        'memo': 'コメント3',
+      });
+
+      await txn.insert('bookmgr_tbl', {
+        'purchased': 1,
+        'date': '2025-04-15',
+        'title': 'タイトル4',
+        'author': '著者3',
+        'publisher': '講談社現代新書',
+        'genre': '宗教',
+        'memo': 'コメント4',
+      });
+
+      await txn.insert('bookmgr_tbl', {
+        'purchased': 1,
+        'date': '2025-04-15',
+        'title': 'タイトル5',
+        'author': '著者5',
+        'publisher': '岩波新書',
+        'genre': '政治',
+        'memo': 'コメント5',
+      });
+    });
+  } on DatabaseException catch (e) {
+    logger.e("DP testDataInserts() error ${e.toString()}");
+  }
+}
+/*
+        'CREATE TABLE bookmgr_tbl(
+        id INTEGER, 
+        purchased INTEGER, 
+        date TEXT, 
+        title TEXT, 
+        author TEXT,
+        publisher TEXT,
+        memo Text,
+        
+        PRIMARY KEY(id  AUTOINCREMENT))',
+        */

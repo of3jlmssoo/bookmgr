@@ -1,3 +1,5 @@
+const databaseName = "bookmgr_database.db";
+
 enum BookGenre {
   economy("経済"),
   religion("宗教"),
