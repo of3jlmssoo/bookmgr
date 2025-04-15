@@ -127,7 +127,10 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Colors.grey.shade500,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          onPressed: () => {},
+          onPressed: () {
+            logger.i('list books');
+            ListRegisteredBooksRoute().go(context);
+          },
           child: Text(v.name, style: TextStyle(color: Colors.black)),
         ),
       );

@@ -6,7 +6,12 @@ part of 'routes.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$listGenre, $homeRoute, $sqlWorkRoute];
+List<RouteBase> get $appRoutes => [
+  $listGenre,
+  $homeRoute,
+  $sqlWorkRoute,
+  $listRegisteredBooksRoute,
+];
 
 RouteBase get $listGenre => GoRouteData.$route(
   path: '/listgenre',
@@ -61,6 +66,28 @@ extension $SqlWorkRouteExtension on SqlWorkRoute {
   static SqlWorkRoute _fromState(GoRouterState state) => const SqlWorkRoute();
 
   String get location => GoRouteData.$location('/sqlwork');
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $listRegisteredBooksRoute => GoRouteData.$route(
+  path: '/listregisteredbooks',
+
+  factory: $ListRegisteredBooksRouteExtension._fromState,
+);
+
+extension $ListRegisteredBooksRouteExtension on ListRegisteredBooksRoute {
+  static ListRegisteredBooksRoute _fromState(GoRouterState state) =>
+      const ListRegisteredBooksRoute();
+
+  String get location => GoRouteData.$location('/listregisteredbooks');
 
   void go(BuildContext context) => context.go(location);
 
