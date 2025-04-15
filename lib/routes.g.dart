@@ -85,9 +85,14 @@ RouteBase get $listRegisteredBooksRoute => GoRouteData.$route(
 
 extension $ListRegisteredBooksRouteExtension on ListRegisteredBooksRoute {
   static ListRegisteredBooksRoute _fromState(GoRouterState state) =>
-      const ListRegisteredBooksRoute();
+      ListRegisteredBooksRoute(
+        genreID: int.parse(state.uri.queryParameters['genre-i-d']!)!,
+      );
 
-  String get location => GoRouteData.$location('/listregisteredbooks');
+  String get location => GoRouteData.$location(
+    '/listregisteredbooks',
+    queryParams: {'genre-i-d': genreID.toString()},
+  );
 
   void go(BuildContext context) => context.go(location);
 

@@ -25,10 +25,13 @@ class SqlWorkScreen extends StatelessWidget {
   // Center sqlWorkBody(BuildContext context) => Center(child: ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')));
 }
 
+// TODO: accept parameters
 class ListRegisteredBooksScreen extends StatelessWidget {
-  ListRegisteredBooksScreen({super.key}) : dp = DatabaseProvider(databasefile: databaseName);
+  ListRegisteredBooksScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
+  final int genreID;
 
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('登録済み書籍一覧')), body: lstregbooksBody(context, dp));
+  Widget build(BuildContext context) =>
+      Scaffold(appBar: AppBar(title: Text('登録済み書籍一覧 ${BookGenre.values[genreID].name}')), body: lstregbooksBody(context, dp));
 }

@@ -4,7 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import 'main.dart';
 
-Center lstregbooksBody(BuildContext context, DatabaseProvider dp) => Center(child: Column(children: [Text('list registered books')]));
+Center lstregbooksBody(BuildContext context, DatabaseProvider dp) => Center(
+  child: Column(
+    children: [Text('list registered books'), ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen'))],
+  ),
+);
 Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
   child: Column(
     children: [

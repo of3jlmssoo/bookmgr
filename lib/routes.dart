@@ -34,9 +34,11 @@ class SqlWorkRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => SqlWorkScreen();
 }
 
+// TODO: list books
 @TypedGoRoute<ListRegisteredBooksRoute>(path: '/listregisteredbooks')
 class ListRegisteredBooksRoute extends GoRouteData {
-  const ListRegisteredBooksRoute();
+  const ListRegisteredBooksRoute({required this.genreID});
+  final int genreID;
   @override
-  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksScreen();
+  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksScreen(genreID: genreID);
 }

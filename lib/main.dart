@@ -70,6 +70,9 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// TODO: extract Scaffold to another file
+// TODO: list publishers
+// TODO: accept new book
 class _MyHomePageState extends State<MyHomePage> {
   // int _counter = 0;
 
@@ -130,8 +133,8 @@ class _MyHomePageState extends State<MyHomePage> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {
-            logger.i('list books. number:$i --- genre ${BookGenre.values[i].name}');
-            ListRegisteredBooksRoute().go(context);
+            logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
+            ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
           },
           // child: Text(v.name, style: TextStyle(color: Colors.black)),
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
