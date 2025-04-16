@@ -32,6 +32,8 @@ class ListRegisteredBooksScreen extends StatelessWidget {
   final int genreID;
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(appBar: AppBar(title: Text('登録済み書籍一覧 ${BookGenre.values[genreID].name}')), body: lstregbooksBody(context, dp));
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[genreID].name}')),
+    body: lstregbooksBody(context, dp),
+  );
 }

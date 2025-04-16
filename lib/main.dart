@@ -35,8 +35,22 @@ class App extends StatelessWidget {
   static const String title = 'GoRouter Example: Named Routes';
 
   @override
-  Widget build(BuildContext context) =>
-      MaterialApp.router(routerConfig: GoRouter(routes: $appRoutes), title: title, debugShowCheckedModeBanner: false);
+  Widget build(BuildContext context) => MaterialApp.router(
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.blue.shade900,
+        inversePrimary: Colors.blue.shade900,
+        brightness: Brightness.dark,
+        surface: Colors.blue.shade500,
+        onPrimary: Colors.black,
+        onPrimaryContainer: Colors.black,
+        onPrimaryFixed: Colors.black,
+      ),
+    ),
+    routerConfig: GoRouter(routes: $appRoutes),
+    title: title,
+    debugShowCheckedModeBanner: false,
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -49,6 +63,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue.shade900,
+          inversePrimary: Colors.blue.shade900,
           brightness: Brightness.dark,
           surface: Colors.blue.shade500,
           onPrimary: Colors.black,
@@ -56,7 +71,7 @@ class MyApp extends StatelessWidget {
           onPrimaryFixed: Colors.black,
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home '),
+      home: const MyHomePage(title: '書籍管理'),
     );
   }
 }
