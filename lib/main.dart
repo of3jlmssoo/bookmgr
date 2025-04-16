@@ -58,45 +58,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue.shade900,
-          inversePrimary: Colors.blue.shade900,
-          brightness: Brightness.dark,
-          surface: Colors.blue.shade500,
-          onPrimary: Colors.black,
-          onPrimaryContainer: Colors.black,
-          onPrimaryFixed: Colors.black,
-        ),
-      ),
-      home: const MyHomePage(title: '書籍管理'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-// TODO: extract Scaffold to another file
-// TODO: list publishers
-// TODO: accept new book
-class _MyHomePageState extends State<MyHomePage> {
-  // int _counter = 0;
-
-  @override
-  Widget build(BuildContext context) {
+    // return MaterialApp(title: 'Flutter Demo', home: const MyHomePage(title: '書籍管理'));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text("書籍管理"),
         actions: [
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
@@ -121,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text("登録済み書籍確認"),
-            Wrap(children: listGenre),
+            Wrap(children: listGenre(context)),
             TextButton(
               onPressed: () {
                 logger.i("aaa");
@@ -135,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Widget> get listGenre {
+  List<Widget> listGenre(BuildContext context) {
     List<Widget> result = [];
 
     for (var i = 0; i < BookGenre.values.length; i++) {
@@ -159,3 +125,87 @@ class _MyHomePageState extends State<MyHomePage> {
     return result;
   }
 }
+
+// class MyHomePage extends StatefulWidget {
+//   const MyHomePage({super.key, required this.title});
+
+//   final String title;
+
+//   @override
+//   State<MyHomePage> createState() => _MyHomePageState();
+// }
+
+// TODO: extract Scaffold to another file
+// TODO: list publishers
+// TODO: accept new book
+// class _MyHomePageState extends State<MyHomePage> {
+//   // int _counter = 0;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+//         title: Text(widget.title),
+//         actions: [
+//           PopupMenuButton(
+//             itemBuilder: (BuildContext context) {
+//               return [
+//                 PopupMenuItem(
+//                   onTap: () {
+//                     logger.i("SQlite work tapped");
+//                     SqlWorkRoute().go(context);
+//                   },
+//                   child: Text('SQLite work'),
+//                 ),
+//                 const PopupMenuItem(child: Text('another work')),
+//               ];
+//             },
+//           ),
+//           SizedBox(width: 100),
+//         ],
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.start,
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: <Widget>[
+//             Text("登録済み書籍確認"),
+//             Wrap(children: listGenre(context)),
+//             TextButton(
+//               onPressed: () {
+//                 logger.i("aaa");
+//                 ListGenre(choice: "0").go(context);
+//               },
+//               child: Text('abc'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   List<Widget> listGenre(BuildContext context) {
+//     List<Widget> result = [];
+
+//     for (var i = 0; i < BookGenre.values.length; i++) {
+//       // for (var v in BookGenre.values) {
+//       // logger.i('listGenre() v:${v.name}');
+//       result.add(
+//         ElevatedButton(
+//           style: ElevatedButton.styleFrom(
+//             backgroundColor: Colors.grey.shade500,
+//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+//           ),
+//           onPressed: () {
+//             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
+//             ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
+//           },
+//           // child: Text(v.name, style: TextStyle(color: Colors.black)),
+//           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
+//         ),
+//       );
+//     }
+//     return result;
+//   }
+// }
