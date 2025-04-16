@@ -29,6 +29,7 @@ void main() {
   );
 }
 
+// TODO: make list publishers
 class App extends StatelessWidget {
   const App({super.key});
 
