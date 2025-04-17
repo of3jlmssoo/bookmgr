@@ -17,7 +17,7 @@ ThemeData mainTheme() {
         foregroundColor: WidgetStatePropertyAll(Colors.grey.shade800),
         // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-        side: WidgetStatePropertyAll(BorderSide(color: Colors.grey.shade700)),
+        side: WidgetStatePropertyAll(BorderSide(color: Colors.grey.shade500)),
       ),
     ),
     textTheme: TextTheme(

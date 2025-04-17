@@ -123,13 +123,38 @@ class InputBookForm extends StatelessWidget {
         children: [
           TextFormField(
             // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "書籍名"),
+            onSaved: (String? value) {},
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter some text';
+                return '書籍名を入力してください';
               }
               return null;
             },
           ),
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "出版社名"),
+            onSaved: (String? value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '出版社名を入力してください';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            decoration: const InputDecoration(labelText: "出版社名"),
+            onSaved: (String? value) {},
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '出版社名を入力してください';
+              }
+              return null;
+            },
+          ),
+
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
