@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,14 @@ class App extends StatelessWidget {
   static const String title = 'GoRouter Example: Named Routes';
 
   @override
-  Widget build(BuildContext context) =>
-      MaterialApp.router(theme: mainTheme(), routerConfig: GoRouter(routes: $appRoutes), title: title, debugShowCheckedModeBanner: false);
+  Widget build(BuildContext context) => MaterialApp.router(
+    // supportedLocales: const [Locale('ja', 'JP')],
+    localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+    theme: mainTheme(),
+    routerConfig: GoRouter(routes: $appRoutes),
+    title: title,
+    debugShowCheckedModeBanner: false,
+  );
 }
 
 class MyApp extends StatefulWidget {
