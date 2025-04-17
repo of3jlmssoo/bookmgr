@@ -1,3 +1,4 @@
+import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,58 +37,35 @@ class App extends StatelessWidget {
   static const String title = 'GoRouter Example: Named Routes';
 
   @override
-  Widget build(BuildContext context) => MaterialApp.router(
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blue.shade900,
-        inversePrimary: Colors.blue.shade900,
-        brightness: Brightness.dark,
-        surface: Colors.blue.shade500,
-        onPrimary: Colors.black,
-        onPrimaryContainer: Colors.black,
-        onPrimaryFixed: Colors.black,
-      ),
-    ),
-    routerConfig: GoRouter(routes: $appRoutes),
-    title: title,
-    debugShowCheckedModeBanner: false,
-  );
+  Widget build(BuildContext context) =>
+      MaterialApp.router(theme: mainTheme(), routerConfig: GoRouter(routes: $appRoutes), title: title, debugShowCheckedModeBanner: false);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     // return MaterialApp(title: 'Flutter Demo', home: const MyHomePage(title: '書籍管理'));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("書籍管理"),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  onTap: () {
-                    logger.i("SQlite work tapped");
-                    SqlWorkRoute().go(context);
-                  },
-                  child: Text('SQLite work'),
-                ),
-                const PopupMenuItem(child: Text('another work')),
-              ];
-            },
-          ),
-          SizedBox(width: 100),
-        ],
+        title: Text("書籍管理", style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+        actions: [MainPopouMenu(), SizedBox(width: 100)],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text("登録済み書籍確認"),
+            SizedBox(height: 10),
+            Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
             Wrap(children: listGenre(context)),
             TextButton(
               onPressed: () {
@@ -96,6 +74,9 @@ class MyApp extends StatelessWidget {
               },
               child: Text('abc'),
             ),
+            SizedBox(height: 30),
+            Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
+            InputBookForm(formKey: _formKey),
           ],
         ),
       ),
@@ -113,6 +94,7 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.grey.shade500,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            side: BorderSide(color: Colors.grey.shade500),
           ),
           onPressed: () {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
@@ -124,6 +106,69 @@ class MyApp extends StatelessWidget {
       );
     }
     return result;
+  }
+}
+
+class InputBookForm extends StatelessWidget {
+  const InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
+
+  final GlobalKey<FormState> _formKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: ElevatedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false otherwise.
+                if (_formKey.currentState!.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MainPopouMenu extends StatelessWidget {
+  const MainPopouMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext context) {
+        return [
+          PopupMenuItem(
+            onTap: () {
+              logger.i("SQlite work tapped");
+              SqlWorkRoute().go(context);
+            },
+            child: Text('SQLite work'),
+          ),
+          const PopupMenuItem(child: Text('another work')),
+        ];
+      },
+    );
   }
 }
 
