@@ -109,6 +109,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+// TODO: Japanese input
+// TODO: process warning
 class InputBookForm extends StatelessWidget {
   InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
 
@@ -116,6 +118,9 @@ class InputBookForm extends StatelessWidget {
 
   final TextEditingController publisherController = TextEditingController();
 
+  String? bname;
+  String? aname;
+  String? pname;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -126,7 +131,9 @@ class InputBookForm extends StatelessWidget {
           TextFormField(
             // The validator receives the text that the user has entered.
             decoration: const InputDecoration(labelText: "書籍名"),
-            onSaved: (String? value) {},
+            onSaved: (String? value) {
+              bname = value;
+            },
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '書籍名を入力してください';
@@ -137,7 +144,9 @@ class InputBookForm extends StatelessWidget {
           TextFormField(
             // The validator receives the text that the user has entered.
             decoration: const InputDecoration(labelText: "著者名"),
-            onSaved: (String? value) {},
+            onSaved: (String? value) {
+              aname = value;
+            },
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '著者名を入力してください';
@@ -162,7 +171,9 @@ class InputBookForm extends StatelessWidget {
             controller: publisherController,
             requestFocusOnTap: true,
             label: const Text('出版社'),
-            onSelected: (Publisher? publisher) {},
+            onSelected: (Publisher? publisher) {
+              pname = publisher!.name;
+            },
             dropdownMenuEntries: Publisher.entries,
           ),
 
@@ -172,9 +183,11 @@ class InputBookForm extends StatelessWidget {
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
                   // If the form is valid, display a snackbar. In the real world,
                   // you'd often call a server or save the information in a database.
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
+                  logger.i('InputBookForm $bname $aname ${publisherController.text}');
                 }
               },
               child: const Text('Submit'),
