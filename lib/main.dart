@@ -30,7 +30,7 @@ void main() {
   );
 }
 
-// TODO: make list publishers
+// TODO: make list publishers as registered books
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -110,9 +110,11 @@ class _MyAppState extends State<MyApp> {
 }
 
 class InputBookForm extends StatelessWidget {
-  const InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
+  InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
 
   final GlobalKey<FormState> _formKey;
+
+  final TextEditingController publisherController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -134,25 +136,34 @@ class InputBookForm extends StatelessWidget {
           ),
           TextFormField(
             // The validator receives the text that the user has entered.
-            decoration: const InputDecoration(labelText: "出版社名"),
+            decoration: const InputDecoration(labelText: "著者名"),
             onSaved: (String? value) {},
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '出版社名を入力してください';
+                return '著者名を入力してください';
               }
               return null;
             },
           ),
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            decoration: const InputDecoration(labelText: "出版社名"),
-            onSaved: (String? value) {},
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '出版社名を入力してください';
-              }
-              return null;
-            },
+          // TextFormField(
+          //   // The validator receives the text that the user has entered.
+          //   decoration: const InputDecoration(labelText: "出版社名"),
+          //   onSaved: (String? value) {},
+          //   validator: (value) {
+          //     if (value == null || value.isEmpty) {
+          //       return '出版社名を入力してください';
+          //     }
+          //     return null;
+          //   },
+          // ),
+          SizedBox(height: 10),
+          DropdownMenu<Publisher>(
+            initialSelection: Publisher.chikuma,
+            controller: publisherController,
+            requestFocusOnTap: true,
+            label: const Text('出版社'),
+            onSelected: (Publisher? publisher) {},
+            dropdownMenuEntries: Publisher.entries,
           ),
 
           Padding(

@@ -1,3 +1,7 @@
+import 'dart:collection';
+
+import 'package:flutter/material.dart';
+
 const databaseName = "bookmgr_database.db";
 
 enum BookGenre {
@@ -13,31 +17,39 @@ enum BookGenre {
   final String name;
 }
 
-enum Publisher {
-  chikuma("ちくま新書"),
-  chikumap("ちくまプリマー新書"),
-  chikumag("ちくま学芸文庫"),
-  hayakawab("早川文庫"),
-  php("PHP新書"),
-  asahi("朝日新著"),
-  chuukou("中公新書"),
-  koudangakubunn("講談社学術文庫"),
-  koudangshinsho("講談社現代新書"),
-  koudanshaplus("講談社+α新書"),
-  bluebacks("ブルーバックス"),
-  koubun("光文社新書"),
-  shincho("新潮新書"),
-  kawada("河出書房新社"),
-  shuueisha("集英社新書"),
-  iwanamigbunko("岩波現代文庫"),
-  iwanamibunko("岩波文庫"),
-  iwanamishinsho("岩波新書"),
-  iwanamij("岩波ジュニア新書"),
-  waseda("早稲田新書"),
-  fusou("扶桑社新書"),
-  gentousha("幻冬舎新書"),
-  shodensha("祥伝社新書");
+typedef PublisherEntry = DropdownMenuEntry<Publisher>;
 
-  const Publisher(this.name);
+enum Publisher {
+  chikuma("ちくま新書", Icons.favorite),
+  chikumap("ちくまプリマー新書", Icons.book),
+  chikumag("ちくま学芸文庫", Icons.book),
+  hayakawab("早川文庫", Icons.book),
+  php("PHP新書", Icons.book),
+  asahi("朝日新著", Icons.book),
+  chuukou("中公新書", Icons.book),
+  koudangakubunn("講談社学術文庫", Icons.book),
+  koudangshinsho("講談社現代新書", Icons.book),
+  koudanshaplus("講談社+α新書", Icons.book),
+  bluebacks("ブルーバックス", Icons.book),
+  koubun("光文社新書", Icons.book),
+  shincho("新潮新書", Icons.book),
+  kawada("河出書房新社", Icons.book),
+  shuueisha("集英社新書", Icons.book),
+  iwanamigbunko("岩波現代文庫", Icons.book),
+  iwanamibunko("岩波文庫", Icons.book),
+  iwanamishinsho("岩波新書", Icons.book),
+  iwanamij("岩波ジュニア新書", Icons.book),
+  waseda("早稲田新書", Icons.book),
+  fusou("扶桑社新書", Icons.book),
+  gentousha("幻冬舎新書", Icons.book),
+  shodensha("祥伝社新書", Icons.book),
+  other("その他", Icons.book),
+  all("全て", Icons.book);
+
+  const Publisher(this.name, this.icon);
   final String name;
+  final IconData icon;
+  static final List<PublisherEntry> entries = UnmodifiableListView<PublisherEntry>(
+    values.map<PublisherEntry>((Publisher publisher) => PublisherEntry(value: publisher, label: publisher.name)),
+  );
 }
