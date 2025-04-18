@@ -39,7 +39,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
-    // supportedLocales: const [Locale('ja', 'JP')],
+    supportedLocales: const [Locale('ja', 'JP')],
     localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
     theme: mainTheme(),
     routerConfig: GoRouter(routes: $appRoutes),
@@ -74,13 +74,11 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 10),
             Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
             Wrap(children: listGenre(context)),
-            TextButton(
-              onPressed: () {
-                logger.i("aaa");
-                ListGenre(choice: "0").go(context);
-              },
-              child: Text('abc'),
-            ),
+            SizedBox(height: 10),
+            // TODO: change to by publisher
+            Wrap(children: listGenre(context)),
+            SizedBox(height: 30),
+            Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
             SizedBox(height: 30),
             Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
             InputBookForm(formKey: _formKey),
@@ -94,8 +92,6 @@ class _MyAppState extends State<MyApp> {
     List<Widget> result = [];
 
     for (var i = 0; i < BookGenre.values.length; i++) {
-      // for (var v in BookGenre.values) {
-      // logger.i('listGenre() v:${v.name}');
       result.add(
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -107,7 +103,6 @@ class _MyAppState extends State<MyApp> {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
             ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
           },
-          // child: Text(v.name, style: TextStyle(color: Colors.black)),
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
         ),
       );
@@ -116,7 +111,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// TODO: Japanese input
+// DONE: Japanese input
 // TODO: process warning
 class InputBookForm extends StatelessWidget {
   InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
@@ -161,20 +156,9 @@ class InputBookForm extends StatelessWidget {
               return null;
             },
           ),
-          // TextFormField(
-          //   // The validator receives the text that the user has entered.
-          //   decoration: const InputDecoration(labelText: "出版社名"),
-          //   onSaved: (String? value) {},
-          //   validator: (value) {
-          //     if (value == null || value.isEmpty) {
-          //       return '出版社名を入力してください';
-          //     }
-          //     return null;
-          //   },
-          // ),
           SizedBox(height: 10),
           DropdownMenu<Publisher>(
-            initialSelection: Publisher.chikuma,
+            initialSelection: Publisher.other,
             controller: publisherController,
             requestFocusOnTap: true,
             label: const Text('出版社'),
@@ -187,6 +171,7 @@ class InputBookForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
+              // TODO: stop using bname, aname, publisher. make a class
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
@@ -228,86 +213,6 @@ class MainPopouMenu extends StatelessWidget {
   }
 }
 
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({super.key, required this.title});
-
-//   final String title;
-
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
-
 // TODO: extract Scaffold to another file
 // TODO: list publishers
 // TODO: accept new book
-// class _MyHomePageState extends State<MyHomePage> {
-//   // int _counter = 0;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-//         title: Text(widget.title),
-//         actions: [
-//           PopupMenuButton(
-//             itemBuilder: (BuildContext context) {
-//               return [
-//                 PopupMenuItem(
-//                   onTap: () {
-//                     logger.i("SQlite work tapped");
-//                     SqlWorkRoute().go(context);
-//                   },
-//                   child: Text('SQLite work'),
-//                 ),
-//                 const PopupMenuItem(child: Text('another work')),
-//               ];
-//             },
-//           ),
-//           SizedBox(width: 100),
-//         ],
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: <Widget>[
-//             Text("登録済み書籍確認"),
-//             Wrap(children: listGenre(context)),
-//             TextButton(
-//               onPressed: () {
-//                 logger.i("aaa");
-//                 ListGenre(choice: "0").go(context);
-//               },
-//               child: Text('abc'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   List<Widget> listGenre(BuildContext context) {
-//     List<Widget> result = [];
-
-//     for (var i = 0; i < BookGenre.values.length; i++) {
-//       // for (var v in BookGenre.values) {
-//       // logger.i('listGenre() v:${v.name}');
-//       result.add(
-//         ElevatedButton(
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.grey.shade500,
-//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//           ),
-//           onPressed: () {
-//             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
-//             ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
-//           },
-//           // child: Text(v.name, style: TextStyle(color: Colors.black)),
-//           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
-//         ),
-//       );
-//     }
-//     return result;
-//   }
-// }

@@ -26,6 +26,10 @@ class SqlWorkScreen extends StatelessWidget {
 }
 
 // DONE: accept parameters
+// TODO: listview from SQL select
+// TODO: update a record "purchased"
+// TODO: update a record "comment"
+
 class ListRegisteredBooksScreen extends StatelessWidget {
   ListRegisteredBooksScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
