@@ -7,12 +7,22 @@ import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 import 'consts.dart';
+
+part 'main.freezed.dart';
 
 part 'main.g.dart';
 
 var logger = Logger(printer: PrettyPrinter());
+
+@freezed
+abstract class Book with _$Book {
+  const factory Book({required String name, String? author, String? publisher}) = _Book;
+
+  factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
+}
 
 @riverpod
 String example(Ref ref) {
