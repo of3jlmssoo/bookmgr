@@ -6,7 +6,7 @@ part 'book.g.dart';
 
 @freezed
 abstract class Book with _$Book {
-  const factory Book({required String name, String? author, String? publisher}) = _Book;
+  const factory Book({required String name, required String author, required String publisher}) = _Book;
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
 }

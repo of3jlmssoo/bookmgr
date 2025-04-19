@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Book {
 
- String get name; String? get author; String? get publisher;
+ String get name; String get author; String get publisher;
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $BookCopyWith<$Res>  {
   factory $BookCopyWith(Book value, $Res Function(Book) _then) = _$BookCopyWithImpl;
 @useResult
 $Res call({
- String name, String? author, String? publisher
+ String name, String author, String publisher
 });
 
 
@@ -66,12 +66,12 @@ class _$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? author = null,Object? publisher = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as String,publisher: null == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -82,12 +82,12 @@ as String?,
 @JsonSerializable()
 
 class _Book implements Book {
-  const _Book({required this.name, this.author, this.publisher});
+  const _Book({required this.name, required this.author, required this.publisher});
   factory _Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
 @override final  String name;
-@override final  String? author;
-@override final  String? publisher;
+@override final  String author;
+@override final  String publisher;
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
@@ -122,7 +122,7 @@ abstract mixin class _$BookCopyWith<$Res> implements $BookCopyWith<$Res> {
   factory _$BookCopyWith(_Book value, $Res Function(_Book) _then) = __$BookCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? author, String? publisher
+ String name, String author, String publisher
 });
 
 
@@ -139,12 +139,12 @@ class __$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? author = null,Object? publisher = null,}) {
   return _then(_Book(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as String,publisher: null == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
