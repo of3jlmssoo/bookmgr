@@ -8,8 +8,8 @@ part of 'book.dart';
 
 _Book _$BookFromJson(Map<String, dynamic> json) => _Book(
   name: json['name'] as String,
-  author: json['author'] as String?,
-  publisher: json['publisher'] as String?,
+  author: json['author'] as String,
+  publisher: json['publisher'] as String,
 );
 
 Map<String, dynamic> _$BookToJson(_Book instance) => <String, dynamic>{

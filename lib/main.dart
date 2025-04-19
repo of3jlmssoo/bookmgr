@@ -116,17 +116,16 @@ class _MyAppState extends State<MyApp> {
 }
 
 // DONE: Japanese input
-// TODO: process warning
+// DONE: process warning
 class InputBookForm extends StatelessWidget {
   InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
+  var book = Book(name: "", author: "", publisher: "");
 
   final GlobalKey<FormState> _formKey;
+  // final Book book;
 
   final TextEditingController publisherController = TextEditingController();
 
-  String? bname;
-  String? aname;
-  String? pname;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -138,7 +137,7 @@ class InputBookForm extends StatelessWidget {
             // The validator receives the text that the user has entered.
             decoration: const InputDecoration(labelText: "書籍名"),
             onSaved: (String? value) {
-              bname = value;
+              book = book.copyWith(name: value!);
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -151,7 +150,7 @@ class InputBookForm extends StatelessWidget {
             // The validator receives the text that the user has entered.
             decoration: const InputDecoration(labelText: "著者名"),
             onSaved: (String? value) {
-              aname = value;
+              book = book.copyWith(author: value!);
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -162,12 +161,12 @@ class InputBookForm extends StatelessWidget {
           ),
           SizedBox(height: 10),
           DropdownMenu<Publisher>(
-            initialSelection: Publisher.other,
+            // initialSelection: Publisher.other,
             controller: publisherController,
             requestFocusOnTap: true,
             label: const Text('出版社'),
             onSelected: (Publisher? publisher) {
-              pname = publisher!.name;
+              book = book.copyWith(publisher: publisher!.name);
             },
             dropdownMenuEntries: Publisher.entries,
           ),
@@ -175,15 +174,16 @@ class InputBookForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              // TODO: stop using bname, aname, publisher. make a class
+              // DONE: stop using bname, aname, publisher. make a class
               onPressed: () {
+                // TODO: clear input after onPressed()
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
-                  logger.i('InputBookForm $bname $aname ${publisherController.text}');
+
+                  var p = book.publisher == "" ? Publisher.other.name : book.publisher;
+                  logger.i('InputBookForm class book ${book.name} ${book.author} $p');
                 }
               },
               child: const Text('Submit'),
