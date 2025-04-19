@@ -1,3 +1,4 @@
+import 'package:bookmgr/book.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
@@ -11,18 +12,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 import 'consts.dart';
 
-part 'main.freezed.dart';
+// part 'main.freezed.dart';
 
 part 'main.g.dart';
 
 var logger = Logger(printer: PrettyPrinter());
-
-@freezed
-abstract class Book with _$Book {
-  const factory Book({required String name, String? author, String? publisher}) = _Book;
-
-  factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
-}
 
 @riverpod
 String example(Ref ref) {
