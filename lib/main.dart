@@ -85,7 +85,54 @@ class _MyAppState extends State<MyApp> {
             Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
             SizedBox(height: 30),
             Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
-            InputBookForm(formKey: _formKey),
+            SizedBox(height: 15),
+            Row(
+              children: [
+                SizedBox(width: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    // backgroundColor: Colors.grey.shade500,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    side: BorderSide(color: Colors.black),
+                  ),
+                  onPressed:
+                      () => {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              height: 200,
+                              // height: 250 + MediaQuery.of(context).viewInsets.bottom,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Text('Modal BottomSheet'),
+                                    ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
+                                    TextField(
+                                      // controller: _textEditingController,
+                                      decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'テキスト'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      },
+                  child: Text("入力", style: TextStyle(fontSize: 15, color: Colors.black)),
+                ),
+              ],
+            ),
+            // InputBookForm(formKey: _formKey),
           ],
         ),
       ),
@@ -118,7 +165,7 @@ class _MyAppState extends State<MyApp> {
 // DONE: Japanese input
 // DONE: process warning
 class InputBookForm extends StatefulWidget {
-  InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
+  const InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
   final GlobalKey<FormState> _formKey;
 
   @override
