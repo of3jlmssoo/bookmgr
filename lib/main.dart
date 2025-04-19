@@ -102,7 +102,10 @@ class _MyAppState extends State<MyApp> {
                           builder: (BuildContext context) {
                             return SizedBox(
                               height: 200,
+<<<<<<< HEAD
                               // height: 250 + MediaQuery.of(context).viewInsets.bottom,
+=======
+>>>>>>> d79bb89ed5486ee54fc4c1b2dfe4258b85ace49e
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -110,6 +113,7 @@ class _MyAppState extends State<MyApp> {
                                   children: <Widget>[
                                     const Text('Modal BottomSheet'),
                                     ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
+<<<<<<< HEAD
                                     TextField(
                                       // controller: _textEditingController,
                                       decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'テキスト'),
@@ -121,6 +125,8 @@ class _MyAppState extends State<MyApp> {
                                       },
                                       child: const Text('OK'),
                                     ),
+=======
+>>>>>>> d79bb89ed5486ee54fc4c1b2dfe4258b85ace49e
                                   ],
                                 ),
                               ),
