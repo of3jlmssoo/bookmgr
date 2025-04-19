@@ -117,23 +117,31 @@ class _MyAppState extends State<MyApp> {
 
 // DONE: Japanese input
 // DONE: process warning
-class InputBookForm extends StatelessWidget {
+class InputBookForm extends StatefulWidget {
   InputBookForm({super.key, required GlobalKey<FormState> formKey}) : _formKey = formKey;
+  final GlobalKey<FormState> _formKey;
+
+  @override
+  State<InputBookForm> createState() => _InputBookFormState();
+}
+
+class _InputBookFormState extends State<InputBookForm> {
   var book = Book(name: "", author: "", publisher: "");
 
-  final GlobalKey<FormState> _formKey;
   // final Book book;
-
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController authorController = TextEditingController();
   final TextEditingController publisherController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: widget._formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
+            controller: nameController,
             // The validator receives the text that the user has entered.
             decoration: const InputDecoration(labelText: "書籍名"),
             onSaved: (String? value) {
@@ -148,6 +156,7 @@ class InputBookForm extends StatelessWidget {
           ),
           TextFormField(
             // The validator receives the text that the user has entered.
+            controller: authorController,
             decoration: const InputDecoration(labelText: "著者名"),
             onSaved: (String? value) {
               book = book.copyWith(author: value!);
@@ -178,12 +187,15 @@ class InputBookForm extends StatelessWidget {
               onPressed: () {
                 // TODO: clear input after onPressed()
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
+                if (widget._formKey.currentState!.validate()) {
+                  widget._formKey.currentState!.save();
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
 
                   var p = book.publisher == "" ? Publisher.other.name : book.publisher;
                   logger.i('InputBookForm class book ${book.name} ${book.author} $p');
+                  nameController.clear();
+                  authorController.clear();
+                  publisherController.clear();
                 }
               },
               child: const Text('Submit'),
