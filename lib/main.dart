@@ -102,31 +102,24 @@ class _MyAppState extends State<MyApp> {
                           builder: (BuildContext context) {
                             return SizedBox(
                               height: 200,
-<<<<<<< HEAD
-                              // height: 250 + MediaQuery.of(context).viewInsets.bottom,
-=======
->>>>>>> d79bb89ed5486ee54fc4c1b2dfe4258b85ace49e
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     const Text('Modal BottomSheet'),
-                                    ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
-<<<<<<< HEAD
-                                    TextField(
-                                      // controller: _textEditingController,
-                                      decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'テキスト'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {});
-                                        Navigator.pop(context);
+                                    TextFormField(
+                                      // The validator receives the text that the user has entered.
+                                      decoration: const InputDecoration(labelText: "書籍名"),
+                                      onSaved: (String? value) {},
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return '書籍名を入力してください';
+                                        }
+                                        return null;
                                       },
-                                      child: const Text('OK'),
                                     ),
-=======
->>>>>>> d79bb89ed5486ee54fc4c1b2dfe4258b85ace49e
+                                    ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
                                   ],
                                 ),
                               ),
