@@ -56,10 +56,16 @@ class ListRegisteredBooksByGenreScreen extends StatelessWidget {
   );
 
   List<Widget> get listBooks {
+    ListTileTitleAlignment? titleAlignment;
     logger.i("listBooks called");
     return <Widget>[
       ListTile(
-        // leading: CircleAvatar(child: Text('A')),
+        // leading: IconButton(
+        //   onPressed: () {
+        //     logger.i("IconButton pressed");
+        //   },
+        //   icon: Icon(Icons.favorite_rounded),
+        // ),
         title: Text('マックス・ウェーバーを読む'),
         subtitle: Text('仲正昌樹  講談社現代新書'),
         // trailing: Icon(Icons.favorite_rounded),
@@ -80,6 +86,37 @@ class ListRegisteredBooksByGenreScreen extends StatelessWidget {
             logger.i("IconButton pressed");
           },
           icon: Icon(Icons.favorite_rounded),
+        ),
+      ),
+      ListTile(
+        title: const Text('蜘蛛女のキス'),
+        subtitle: const Text('プイグ'),
+        trailing: PopupMenuButton<ListTileTitleAlignment>(
+          onSelected: (ListTileTitleAlignment? value) {
+            titleAlignment = value;
+          },
+          itemBuilder:
+              (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("add comment");
+                  },
+                  child: Text('コメント追加'),
+                ),
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("purcahsed");
+                  },
+                  child: Text('購入'),
+                ),
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("delete");
+                  },
+                  child: Text('削除'),
+                ),
+                // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
+              ],
         ),
       ),
     ];
