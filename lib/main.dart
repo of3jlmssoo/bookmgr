@@ -32,7 +32,7 @@ void main() {
   runApp(ProviderScope(child: App()));
 }
 
-// TODO: list registered books by publisher as genre
+// DONE: list registered books by publisher as genre
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
             Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
             Wrap(children: listGenre(context)),
             SizedBox(height: 10),
-            // TODO: change to by publisher
+            // DONE: change to by publisher
             Wrap(children: listPublisher(context)),
             SizedBox(height: 30),
             Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
@@ -271,7 +271,7 @@ class _InputBookFormState extends State<InputBookForm> {
             child: ElevatedButton(
               // DONE: stop using bname, aname, publisher. make a class
               onPressed: () {
-                // TODO: clear input after onPressed()
+                // DONE: clear input after onPressed()
                 // Validate returns true if the form is valid, or false otherwise.
                 if (widget._formKey.currentState!.validate()) {
                   widget._formKey.currentState!.save();
