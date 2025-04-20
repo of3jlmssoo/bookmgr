@@ -1,8 +1,9 @@
 import 'package:bookmgr/dbprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'loggerdef.dart';
 
-import 'main.dart';
+// import 'main.dart';
 
 Center lstregbooksBody(BuildContext context, DatabaseProvider dp) => Center(
   child: Column(

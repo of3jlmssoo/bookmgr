@@ -5,18 +5,19 @@ import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
+// import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 // import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:flutter/foundation.dart';
+import 'loggerdef.dart';
 import 'consts.dart';
 
 // part 'main.freezed.dart';
 
 part 'main.g.dart';
 
-var logger = Logger(printer: PrettyPrinter());
+// var logger = Logger(printer: PrettyPrinter());
 
 @riverpod
 String example(Ref ref) {

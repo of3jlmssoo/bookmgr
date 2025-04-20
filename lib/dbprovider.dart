@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:bookmgr/main.dart';
+// import 'package:bookmgr/main.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'loggerdef.dart';
 
 class DatabaseProvider {
   DatabaseProvider({required this.databasefile});
