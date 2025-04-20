@@ -73,9 +73,11 @@ class MyApp extends StatelessWidget {
             Wrap(children: listGenre(context)),
             SizedBox(height: 10),
             // TODO: change to by publisher
-            Wrap(children: listGenre(context)),
+            Wrap(children: listPublisher(context)),
             SizedBox(height: 30),
             Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
+            SizedBox(height: 16),
+            ElevatedButton(onPressed: () {}, child: Text("submit")),
             SizedBox(height: 30),
             Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
             SizedBox(height: 15),
@@ -151,6 +153,28 @@ class MyApp extends StatelessWidget {
             ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
           },
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
+        ),
+      );
+    }
+    return result;
+  }
+
+  List<Widget> listPublisher(BuildContext context) {
+    List<Widget> result = [];
+
+    for (var i = 0; i < Publisher.values.length; i++) {
+      result.add(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey.shade500,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            side: BorderSide(color: Colors.grey.shade500),
+          ),
+          onPressed: () {
+            logger.i('list books. number:$i --- genre ${Publisher.values[i].name} --- ${Publisher.values[i].runtimeType}');
+            ListRegisteredBooksByPublisherRoute(publisherID: Publisher.values[i].index).go(context);
+          },
+          child: Text(Publisher.values[i].name, style: TextStyle(color: Colors.black)),
         ),
       );
     }

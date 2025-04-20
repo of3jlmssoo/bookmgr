@@ -40,5 +40,13 @@ class ListRegisteredBooksRoute extends GoRouteData {
   const ListRegisteredBooksRoute({required this.genreID});
   final int genreID;
   @override
-  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksScreen(genreID: genreID);
+  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByGenreScreen(genreID: genreID);
+}
+
+@TypedGoRoute<ListRegisteredBooksByPublisherRoute>(path: '/listregisteredbooksbypublisher')
+class ListRegisteredBooksByPublisherRoute extends GoRouteData {
+  const ListRegisteredBooksByPublisherRoute({required this.publisherID});
+  final int publisherID;
+  @override
+  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByPublisherScreen(pulisherID: publisherID);
 }

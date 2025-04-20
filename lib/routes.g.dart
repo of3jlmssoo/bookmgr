@@ -11,6 +11,7 @@ List<RouteBase> get $appRoutes => [
   $homeRoute,
   $sqlWorkRoute,
   $listRegisteredBooksRoute,
+  $listRegisteredBooksByPublisherRoute,
 ];
 
 RouteBase get $listGenre => GoRouteData.$route(
@@ -92,6 +93,34 @@ extension $ListRegisteredBooksRouteExtension on ListRegisteredBooksRoute {
   String get location => GoRouteData.$location(
     '/listregisteredbooks',
     queryParams: {'genre-i-d': genreID.toString()},
+  );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $listRegisteredBooksByPublisherRoute => GoRouteData.$route(
+  path: '/listregisteredbooksbypublisher',
+
+  factory: $ListRegisteredBooksByPublisherRouteExtension._fromState,
+);
+
+extension $ListRegisteredBooksByPublisherRouteExtension
+    on ListRegisteredBooksByPublisherRoute {
+  static ListRegisteredBooksByPublisherRoute _fromState(GoRouterState state) =>
+      ListRegisteredBooksByPublisherRoute(
+        publisherID: int.parse(state.uri.queryParameters['publisher-i-d']!)!,
+      );
+
+  String get location => GoRouteData.$location(
+    '/listregisteredbooksbypublisher',
+    queryParams: {'publisher-i-d': publisherID.toString()},
   );
 
   void go(BuildContext context) => context.go(location);

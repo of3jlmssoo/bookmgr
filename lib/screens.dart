@@ -30,14 +30,27 @@ class SqlWorkScreen extends StatelessWidget {
 // TODO: update a record "purchased"
 // TODO: update a record "comment"
 
-class ListRegisteredBooksScreen extends StatelessWidget {
-  ListRegisteredBooksScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
+class ListRegisteredBooksByGenreScreen extends StatelessWidget {
+  ListRegisteredBooksByGenreScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   final int genreID;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[genreID].name}')),
+    body: lstregbooksBody(context, dp),
+  );
+}
+
+// TODO: set ListRegisteredBooksByPublisherScreen to routes.dart
+class ListRegisteredBooksByPublisherScreen extends StatelessWidget {
+  ListRegisteredBooksByPublisherScreen({super.key, required this.pulisherID}) : dp = DatabaseProvider(databasefile: databaseName);
+  final DatabaseProvider dp;
+  final int pulisherID;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${Publisher.values[pulisherID].name}')),
     body: lstregbooksBody(context, dp),
   );
 }
