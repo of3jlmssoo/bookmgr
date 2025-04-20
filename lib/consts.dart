@@ -4,17 +4,23 @@ import 'package:flutter/material.dart';
 
 const databaseName = "bookmgr_database.db";
 
-enum BookGenre {
-  economy("経済"),
-  religion("宗教"),
-  it("IT"),
-  social("社会"),
-  politics("政治"),
-  other("その他"),
-  all("全て");
+typedef BookGenreEntry = DropdownMenuEntry<BookGenre>;
 
-  const BookGenre(this.name);
+enum BookGenre {
+  economy("経済", Icons.description),
+  religion("宗教", Icons.description),
+  it("IT", Icons.description),
+  social("社会", Icons.description),
+  politics("政治", Icons.description),
+  other("その他", Icons.description),
+  all("全て", Icons.description);
+
+  const BookGenre(this.name, this.icon);
   final String name;
+  final IconData icon;
+  static final List<BookGenreEntry> entries = UnmodifiableListView<BookGenreEntry>(
+    values.map<BookGenreEntry>((BookGenre bookgenre) => BookGenreEntry(value: bookgenre, label: bookgenre.name)),
+  );
 }
 
 typedef PublisherEntry = DropdownMenuEntry<Publisher>;

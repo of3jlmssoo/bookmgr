@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Book {
 
- String get name; String get author; String get publisher;
+ String get name; String? get author; Publisher? get publisher; BookGenre? get genre;
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $BookCopyWith<Book> get copyWith => _$BookCopyWithImpl<Book>(this as Book, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,author,publisher);
+int get hashCode => Object.hash(runtimeType,name,author,publisher,genre);
 
 @override
 String toString() {
-  return 'Book(name: $name, author: $author, publisher: $publisher)';
+  return 'Book(name: $name, author: $author, publisher: $publisher, genre: $genre)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $BookCopyWith<$Res>  {
   factory $BookCopyWith(Book value, $Res Function(Book) _then) = _$BookCopyWithImpl;
 @useResult
 $Res call({
- String name, String author, String publisher
+ String name, String? author, Publisher? publisher, BookGenre? genre
 });
 
 
@@ -66,12 +66,13 @@ class _$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? author = null,Object? publisher = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String,publisher: null == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
-as String,
+as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as Publisher?,genre: freezed == genre ? _self.genre : genre // ignore: cast_nullable_to_non_nullable
+as BookGenre?,
   ));
 }
 
@@ -82,12 +83,13 @@ as String,
 @JsonSerializable()
 
 class _Book implements Book {
-  const _Book({required this.name, required this.author, required this.publisher});
+  const _Book({required this.name, this.author, this.publisher, this.genre});
   factory _Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
 @override final  String name;
-@override final  String author;
-@override final  String publisher;
+@override final  String? author;
+@override final  Publisher? publisher;
+@override final  BookGenre? genre;
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
@@ -102,16 +104,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,author,publisher);
+int get hashCode => Object.hash(runtimeType,name,author,publisher,genre);
 
 @override
 String toString() {
-  return 'Book(name: $name, author: $author, publisher: $publisher)';
+  return 'Book(name: $name, author: $author, publisher: $publisher, genre: $genre)';
 }
 
 
@@ -122,7 +124,7 @@ abstract mixin class _$BookCopyWith<$Res> implements $BookCopyWith<$Res> {
   factory _$BookCopyWith(_Book value, $Res Function(_Book) _then) = __$BookCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String author, String publisher
+ String name, String? author, Publisher? publisher, BookGenre? genre
 });
 
 
@@ -139,12 +141,13 @@ class __$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? author = null,Object? publisher = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,}) {
   return _then(_Book(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as String,publisher: null == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
-as String,
+as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
+as Publisher?,genre: freezed == genre ? _self.genre : genre // ignore: cast_nullable_to_non_nullable
+as BookGenre?,
   ));
 }
 

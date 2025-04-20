@@ -8,8 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:freezed_annotation/freezed_annotation.dart';
+// import 'package:flutter/foundation.dart';
 import 'consts.dart';
 
 // part 'main.freezed.dart';
@@ -29,13 +29,10 @@ void main() {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
-  runApp(
-    ProviderScope(child: App()),
-    // ProviderScope(child: const MyApp())
-  );
+  runApp(ProviderScope(child: App()));
 }
 
-// TODO: make list publishers as registered books
+// TODO: list registered books by publisher as genre
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -52,15 +49,11 @@ class App extends StatelessWidget {
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     // return MaterialApp(title: 'Flutter Demo', home: const MyHomePage(title: '書籍管理'));
@@ -86,55 +79,59 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 30),
             Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
             SizedBox(height: 15),
-            Row(
-              children: [
-                SizedBox(width: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    // backgroundColor: Colors.grey.shade500,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    side: BorderSide(color: Colors.black),
-                  ),
-                  onPressed:
-                      () => {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SizedBox(
-                              height: 200,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text('Modal BottomSheet'),
-                                    TextFormField(
-                                      // The validator receives the text that the user has entered.
-                                      decoration: const InputDecoration(labelText: "書籍名"),
-                                      onSaved: (String? value) {},
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return '書籍名を入力してください';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      },
-                  child: Text("入力", style: TextStyle(fontSize: 15, color: Colors.black)),
-                ),
-              ],
-            ),
-            // InputBookForm(formKey: _formKey),
+            // inputBookDmenu(context),
+            InputBookForm(formKey: _formKey),
           ],
         ),
       ),
+    );
+  }
+
+  Row inputBookDropDownMenu(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            // backgroundColor: Colors.grey.shade500,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            side: BorderSide(color: Colors.black),
+          ),
+          onPressed:
+              () => {
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Text('Modal BottomSheet'),
+                            TextFormField(
+                              // The validator receives the text that the user has entered.
+                              decoration: const InputDecoration(labelText: "書籍名"),
+                              onSaved: (String? value) {},
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '書籍名を入力してください';
+                                }
+                                return null;
+                              },
+                            ),
+                            ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              },
+          child: Text("入力", style: TextStyle(fontSize: 15, color: Colors.black)),
+        ),
+      ],
     );
   }
 
@@ -172,12 +169,13 @@ class InputBookForm extends StatefulWidget {
 }
 
 class _InputBookFormState extends State<InputBookForm> {
-  var book = Book(name: "", author: "", publisher: "");
+  var book = Book(name: "", author: "", publisher: Publisher.other, genre: BookGenre.other);
 
   // final Book book;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
   final TextEditingController publisherController = TextEditingController();
+  final TextEditingController genreController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -207,23 +205,41 @@ class _InputBookFormState extends State<InputBookForm> {
             onSaved: (String? value) {
               book = book.copyWith(author: value!);
             },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '著者名を入力してください';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) {
+            //     return '著者名を入力してください';
+            //   }
+            //   return null;
+            // },
           ),
           SizedBox(height: 10),
-          DropdownMenu<Publisher>(
-            // initialSelection: Publisher.other,
-            controller: publisherController,
-            requestFocusOnTap: true,
-            label: const Text('出版社'),
-            onSelected: (Publisher? publisher) {
-              book = book.copyWith(publisher: publisher!.name);
-            },
-            dropdownMenuEntries: Publisher.entries,
+          Row(
+            children: [
+              DropdownMenu<Publisher>(
+                width: 130,
+                // initialSelection: Publisher.other,
+                controller: publisherController,
+                requestFocusOnTap: true,
+                label: const Text('出版社'),
+                onSelected: (Publisher? publisher) {
+                  book = book.copyWith(publisher: publisher);
+                },
+
+                dropdownMenuEntries: Publisher.entries,
+              ),
+              SizedBox(width: 20),
+              DropdownMenu<BookGenre>(
+                width: 140,
+                // initialSelection: Publisher.other,
+                controller: genreController,
+                requestFocusOnTap: true,
+                label: const Text('ジャンル'),
+                onSelected: (BookGenre? genre) {
+                  book = book.copyWith(genre: genre);
+                },
+                dropdownMenuEntries: BookGenre.entries,
+              ),
+            ],
           ),
 
           Padding(
@@ -237,11 +253,18 @@ class _InputBookFormState extends State<InputBookForm> {
                   widget._formKey.currentState!.save();
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
 
-                  var p = book.publisher == "" ? Publisher.other.name : book.publisher;
-                  logger.i('InputBookForm class book ${book.name} ${book.author} $p');
+                  // var p = book.publisher == "" ? Publisher.other.name : book.publisher;
+                  // var p = book.publisher == "" ? Publisher.other.name : book.publisher;
+                  // logger.i('InputBookForm class book ${book.name} ${book.author} $p');
+                  logger.i('InputBookForm class book ${book.name} ${book.author} ${book.publisher} ${book.genre}');
                   nameController.clear();
                   authorController.clear();
                   publisherController.clear();
+                  genreController.clear();
+                  book = book.copyWith(name: "");
+                  book = book.copyWith(author: "");
+                  book = book.copyWith(publisher: Publisher.other);
+                  book = book.copyWith(genre: BookGenre.other);
                 }
               },
               child: const Text('Submit'),
