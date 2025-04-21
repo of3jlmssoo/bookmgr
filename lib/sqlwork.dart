@@ -1,3 +1,4 @@
+import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/dbprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +54,13 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         },
         child: Text('query book names only'),
       ),
-
+      TextButton(
+        onPressed: () async {
+          var list = await dp.selectByGenre(BookGenre.economy);
+          logger.i("select by genre list $list");
+        },
+        child: Text('select by genre/economy'),
+      ),
       TextButton(
         onPressed: () async {
           await dp.deleteAllRows();

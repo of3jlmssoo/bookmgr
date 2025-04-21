@@ -31,7 +31,7 @@ class SqlWorkScreen extends StatelessWidget {
 // TODO: listview from SQL select
 // TODO: update a record "purchased"
 // TODO: update a record "comment"
-
+// TODO genreID to BookGenre enum
 class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   ListRegisteredBooksByGenreScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
@@ -43,9 +43,11 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
 }
 
 class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
+  _ListRegisteredBooksByGenreScreenState({required this.genreID});
+  final int genreID;
   Future<List<Widget>> getData() async {
     await Future.delayed(const Duration(seconds: 2));
-    return await listBooks3();
+    return await listBooks3(genreID);
   }
 
   @override
@@ -85,7 +87,7 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
     // ),
   );
 
-  Future<List<Widget>> listBooks3() async {
+  Future<List<Widget>> listBooks3({required BookGenre genre}) async {
     logger.i("listBooks3() called");
 
     if (true) {

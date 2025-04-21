@@ -18,6 +18,12 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
+  Future<List> selectByGenre(BookGenre genre) async {
+    if (db == null) await openDB();
+    var list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', ['経済']);
+    return list;
+  }
+
   Future<void> dataInsert({
     int purchased = 0,
     String inputDate = "",
