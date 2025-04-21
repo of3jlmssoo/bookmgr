@@ -11,6 +11,7 @@ enum BookGenre {
   religion("宗教", Icons.description),
   it("IT", Icons.description),
   social("社会", Icons.description),
+  philosophy("哲学思想", Icons.description),
   politics("政治", Icons.description),
   other("その他", Icons.description),
   all("全て", Icons.description);

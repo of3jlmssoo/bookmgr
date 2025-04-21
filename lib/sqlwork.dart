@@ -1,6 +1,7 @@
 import 'package:bookmgr/dbprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'loggerdef.dart';
 
 // import 'main.dart';
@@ -29,10 +30,23 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
       ),
       TextButton(
         onPressed: () async {
+          await dp.dataInsert();
+        },
+        child: Text('test data insert'),
+      ),
+      TextButton(
+        onPressed: () async {
           await dp.query();
         },
         child: Text('query bookmgr_tbl'),
       ),
+      TextButton(
+        onPressed: () async {
+          await dp.querybookname();
+        },
+        child: Text('query book names only'),
+      ),
+
       TextButton(
         onPressed: () async {
           await dp.deleteAllRows();
