@@ -1,17 +1,18 @@
 import 'package:bookmgr/book.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import 'consts.dart';
 // import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:flutter/foundation.dart';
 import 'loggerdef.dart';
-import 'consts.dart';
 
 // part 'main.freezed.dart';
 
@@ -65,26 +66,28 @@ class MyApp extends StatelessWidget {
         actions: [MainPopouMenu(), SizedBox(width: 100)],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 10),
-            Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
-            Wrap(children: listGenre(context)),
-            SizedBox(height: 10),
-            // DONE: change to by publisher
-            Wrap(children: listPublisher(context)),
-            SizedBox(height: 30),
-            Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
-            SizedBox(height: 16),
-            ElevatedButton(onPressed: () {}, child: Text("submit")),
-            SizedBox(height: 30),
-            Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
-            SizedBox(height: 15),
-            // inputBookDmenu(context),
-            InputBookForm(formKey: _formKey),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 10),
+              Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
+              Wrap(children: listGenre(context)),
+              SizedBox(height: 10),
+              // DONE: change to by publisher
+              Wrap(children: listPublisher(context)),
+              SizedBox(height: 30),
+              Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
+              SizedBox(height: 16),
+              ElevatedButton(onPressed: () {}, child: Text("submit")),
+              SizedBox(height: 30),
+              Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
+              SizedBox(height: 15),
+              // inputBookDmenu(context),
+              InputBookForm(formKey: _formKey),
+            ],
+          ),
         ),
       ),
     );
