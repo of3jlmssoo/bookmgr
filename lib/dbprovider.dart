@@ -93,9 +93,9 @@ class DatabaseProvider {
       // memo Text,
       list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
       for (var l in list) {
-        logger.i("DP query() $l");
+        // logger.i("DP query() $l");
       }
-      logger.i('DP query() $list');
+      // logger.i('DP query() $list');
       return list;
     } on DatabaseException catch (e) {
       logger.e("DP query() error ${e.toString()}");

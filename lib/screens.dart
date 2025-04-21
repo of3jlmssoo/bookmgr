@@ -43,60 +43,100 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
 }
 
 class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
+  Future<List<Widget>> getData() async {
+    await Future.delayed(const Duration(seconds: 2));
+    return await listBooks3();
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[widget.genreID].name}')),
     // body: lstregbooksBody(context, dp),
-    body: Column(
-      children: [
-        LimitedBox(
-          maxHeight: 500,
-          child: ListView(
-            // shrinkWrap: true,
-            padding: const EdgeInsets.all(8),
-            children: listBooks(),
-          ),
-        ),
-        ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
-      ],
+    body: FutureBuilder<List<Widget>>(
+      future: getData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget>? categories = snapshot.data;
+          logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          return ListView.builder(
+            itemCount: categories!.length,
+            itemBuilder: (context, index) {
+              return categories[index];
+            },
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+        }
+        return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+      },
     ),
+    // body: Column(
+    //   children: [
+    //     LimitedBox(
+    //       maxHeight: 500,
+    //       child: ListView(
+    //         // shrinkWrap: true,
+    //         padding: const EdgeInsets.all(8),
+    //         children: listBooks(),
+    //       ),
+    //     ),
+    //     ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
+    //   ],
+    // ),
   );
 
   Future<List<Widget>> listBooks3() async {
-    List<Widget> result = [
-      ListTile(
-        title: const Text('蜘蛛女のキス'),
-        subtitle: const Text('プイグ'),
-        trailing: PopupMenuButton<ListTileTitleAlignment>(
-          onSelected: (ListTileTitleAlignment? value) {
-            // titleAlignment = value;
-          },
-          itemBuilder:
-              (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[
-                PopupMenuItem<ListTileTitleAlignment>(
-                  onTap: () {
-                    logger.i("add comment");
-                  },
-                  child: Text('コメント追加'),
-                ),
-                PopupMenuItem<ListTileTitleAlignment>(
-                  onTap: () {
-                    logger.i("purcahsed");
-                  },
-                  child: Text('購入'),
-                ),
-                PopupMenuItem<ListTileTitleAlignment>(
-                  onTap: () {
-                    logger.i("delete");
-                  },
-                  child: Text('削除'),
-                ),
-                // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
-              ],
+    logger.i("listBooks3() called");
+
+    if (true) {
+      logger.i("listBooks3() then");
+      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+      List<Map> lm = await dp.query();
+      logger.i("listBooks3() lm.length ${lm.length} lm $lm");
+      List<Widget> lw = List.empty(growable: true);
+      for (int i = 0; i < lm.length; i++) {
+        logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+        logger.i("listBooks3() i=$i --- $lw");
+        lw.add(ListTile(title: Text(lm[i]['title']), subtitle: Text(lm[i]['author'])));
+        logger.i("listBooks3() i=$i --- $lw");
+      }
+      return lw;
+    } else {
+      List<Widget> result = [
+        ListTile(
+          title: const Text('蜘蛛女のキス'),
+          subtitle: const Text('プイグ'),
+          trailing: PopupMenuButton<ListTileTitleAlignment>(
+            onSelected: (ListTileTitleAlignment? value) {
+              // titleAlignment = value;
+            },
+            itemBuilder:
+                (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[
+                  PopupMenuItem<ListTileTitleAlignment>(
+                    onTap: () {
+                      logger.i("add comment");
+                    },
+                    child: Text('コメント追加'),
+                  ),
+                  PopupMenuItem<ListTileTitleAlignment>(
+                    onTap: () {
+                      logger.i("purcahsed");
+                    },
+                    child: Text('購入'),
+                  ),
+                  PopupMenuItem<ListTileTitleAlignment>(
+                    onTap: () {
+                      logger.i("delete");
+                    },
+                    child: Text('削除'),
+                  ),
+                  // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
+                ],
+          ),
         ),
-      ),
-    ];
-    return result;
+      ];
+      return result;
+    }
   }
 
   List<Widget> listBooks() {

@@ -158,7 +158,7 @@ class MyApp extends StatelessWidget {
             DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
             List<Map<dynamic, dynamic>> result = await dp.query();
             logger.i("list by genre ${result.runtimeType} $result");
-            if (context.mounted) ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
+            if (context.mounted) ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).push(context);
           },
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
         ),
@@ -179,7 +179,7 @@ class MyApp extends StatelessWidget {
             side: BorderSide(color: Colors.grey.shade500),
           ),
           onPressed: () {
-            logger.i('list books. number:$i --- genre ${Publisher.values[i].name} --- ${Publisher.values[i].runtimeType}');
+            // logger.i('list books. number:$i --- genre ${Publisher.values[i].name} --- ${Publisher.values[i].runtimeType}');
             ListRegisteredBooksByPublisherRoute(publisherID: Publisher.values[i].index).go(context);
           },
           child: Text(Publisher.values[i].name, style: TextStyle(color: Colors.black)),
