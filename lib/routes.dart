@@ -3,7 +3,9 @@ import 'package:bookmgr/main.dart';
 import 'package:bookmgr/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'loggerdef.dart';
+
 part 'routes.g.dart';
 
 @TypedGoRoute<ListGenre>(path: '/listgenre')
@@ -39,6 +41,7 @@ class SqlWorkRoute extends GoRouteData {
 class ListRegisteredBooksRoute extends GoRouteData {
   const ListRegisteredBooksRoute({required this.genreID});
   final int genreID;
+  // final List<Map<dynamic, dynamic>> list;
   @override
   Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByGenreScreen(genreID: genreID);
 }

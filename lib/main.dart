@@ -1,4 +1,5 @@
 import 'package:bookmgr/book.dart';
+import 'package:bookmgr/dbprovider.dart';
 import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
@@ -152,9 +153,12 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             side: BorderSide(color: Colors.grey.shade500),
           ),
-          onPressed: () {
+          onPressed: () async {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
-            ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
+            DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+            List<Map<dynamic, dynamic>> result = await dp.query();
+            logger.i("list by genre ${result.runtimeType} $result");
+            if (context.mounted) ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).go(context);
           },
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
         ),
@@ -285,6 +289,8 @@ class _InputBookFormState extends State<InputBookForm> {
                   // var p = book.publisher == "" ? Publisher.other.name : book.publisher;
                   // logger.i('InputBookForm class book ${book.name} ${book.author} $p');
                   logger.i('InputBookForm class book ${book.name} ${book.author} ${book.publisher} ${book.genre}');
+                  var dp = DatabaseProvider(databasefile: databaseName);
+                  dp.dataInsert(title: book.name, author: book.author ?? "");
                   nameController.clear();
                   authorController.clear();
                   publisherController.clear();

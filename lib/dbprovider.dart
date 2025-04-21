@@ -3,6 +3,7 @@ import 'dart:io';
 // import 'package:bookmgr/main.dart';
 import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/testdatainserts.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,20 +18,31 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
-  Future<void> dataInsert() async {
+  Future<void> dataInsert({
+    int purchased = 0,
+    String inputDate = "",
+    required String title,
+    String author = "",
+    Publisher publisher = Publisher.other,
+    BookGenre genre = BookGenre.other,
+    String comment = "",
+  }) async {
     if (db == null) await openDB();
+
+    if (inputDate == "") inputDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
     try {
       // await testdatainserts(txn);
-      var purchasedate = 0;
-      var t = 'マックス・ウェーバーを読む';
-      var a = "仲正昌樹";
-      var d = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      var p = Publisher.koudangshinsho.name;
-      var g = BookGenre.philosophy.name;
-      var c = 'こめんと';
+      // var purchased = 0;
+      // var t = 'マックス・ウェーバーを読む';
+      // var a = "仲正昌樹";
+      // var d = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // var p = Publisher.koudangshinsho.name;
+      // var g = BookGenre.philosophy.name;
+      // var c = 'こめんと';
       int recordId = await db!.rawInsert(
         'INSERT INTO bookmgr_tbl(purchased, date, title, author, publisher, genre, memo) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [purchasedate, d, t, a, p, g, c],
+        [purchased, inputDate, title, author, publisher.name, genre.name, comment],
       );
       logger.i("dataInsert recordID $recordId");
     } on DatabaseException catch (e) {
@@ -48,8 +60,28 @@ class DatabaseProvider {
     return await db!.delete('bookmgr_tbl');
   }
 
-  Future<void> query() async {
+  Future<List<Widget>> query2() async {
     if (db == null) await openDB();
+    List<Widget> result = [];
+    try {
+      var list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      for (var l in list) {
+        var str4subtitle = "${l['author']}  ${l["publisher"]}";
+        // logger.i("query2() ${l["title"]} --- $str4subtitle");
+        result.add(ListTile(title: Text(l["title"].toString()), subtitle: Text(str4subtitle)));
+      }
+      // logger.i('DP query() $result');
+      // logger.i('DP query() ${result[0]}');
+      return result;
+    } on DatabaseException catch (e) {
+      logger.e("DP query() error ${e.toString()}");
+    }
+    return result;
+  }
+
+  Future<List<Map>> query() async {
+    if (db == null) await openDB();
+    List<Map> list = [];
     try {
       // id INTEGER,
       // purchased INTEGER,
@@ -59,14 +91,16 @@ class DatabaseProvider {
       // publisher TEXT,
       // genre
       // memo Text,
-      var list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
       for (var l in list) {
         logger.i("DP query() $l");
       }
       logger.i('DP query() $list');
+      return list;
     } on DatabaseException catch (e) {
       logger.e("DP query() error ${e.toString()}");
     }
+    return list;
   }
 
   Future<void> querybookname() async {

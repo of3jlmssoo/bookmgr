@@ -5,6 +5,7 @@ import 'package:bookmgr/dbprovider.dart';
 import 'package:bookmgr/sqlwork.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'loggerdef.dart';
 
 class ListGenreScreen extends StatelessWidget {
@@ -31,14 +32,20 @@ class SqlWorkScreen extends StatelessWidget {
 // TODO: update a record "purchased"
 // TODO: update a record "comment"
 
-class ListRegisteredBooksByGenreScreen extends StatelessWidget {
+class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   ListRegisteredBooksByGenreScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   final int genreID;
+  // final List<Map<dynamic, dynamic>> list;
 
   @override
+  State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState();
+}
+
+class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
+  @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[genreID].name}')),
+    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[widget.genreID].name}')),
     // body: lstregbooksBody(context, dp),
     body: Column(
       children: [
@@ -47,7 +54,7 @@ class ListRegisteredBooksByGenreScreen extends StatelessWidget {
           child: ListView(
             // shrinkWrap: true,
             padding: const EdgeInsets.all(8),
-            children: listBooks,
+            children: listBooks(),
           ),
         ),
         ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
@@ -55,9 +62,47 @@ class ListRegisteredBooksByGenreScreen extends StatelessWidget {
     ),
   );
 
-  List<Widget> get listBooks {
-    ListTileTitleAlignment? titleAlignment;
-    logger.i("listBooks called");
+  Future<List<Widget>> listBooks3() async {
+    List<Widget> result = [
+      ListTile(
+        title: const Text('蜘蛛女のキス'),
+        subtitle: const Text('プイグ'),
+        trailing: PopupMenuButton<ListTileTitleAlignment>(
+          onSelected: (ListTileTitleAlignment? value) {
+            // titleAlignment = value;
+          },
+          itemBuilder:
+              (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("add comment");
+                  },
+                  child: Text('コメント追加'),
+                ),
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("purcahsed");
+                  },
+                  child: Text('購入'),
+                ),
+                PopupMenuItem<ListTileTitleAlignment>(
+                  onTap: () {
+                    logger.i("delete");
+                  },
+                  child: Text('削除'),
+                ),
+                // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
+              ],
+        ),
+      ),
+    ];
+    return result;
+  }
+
+  List<Widget> listBooks() {
+    // ListTileTitleAlignment? titleAlignment;
+    // var list = await widget.dp.query();
+    // logger.i("listBooks called --- $list");
     return <Widget>[
       ListTile(
         // leading: IconButton(
@@ -93,7 +138,7 @@ class ListRegisteredBooksByGenreScreen extends StatelessWidget {
         subtitle: const Text('プイグ'),
         trailing: PopupMenuButton<ListTileTitleAlignment>(
           onSelected: (ListTileTitleAlignment? value) {
-            titleAlignment = value;
+            // titleAlignment = value;
           },
           itemBuilder:
               (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[

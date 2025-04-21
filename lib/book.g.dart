@@ -53,6 +53,7 @@ const _$BookGenreEnumMap = {
   BookGenre.religion: 'religion',
   BookGenre.it: 'it',
   BookGenre.social: 'social',
+  BookGenre.philosophy: 'philosophy',
   BookGenre.politics: 'politics',
   BookGenre.other: 'other',
   BookGenre.all: 'all',

@@ -30,7 +30,7 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
       ),
       TextButton(
         onPressed: () async {
-          await dp.dataInsert();
+          await dp.dataInsert(purchased: 0, title: "マックス・ウェーバーを読む", author: "仲正昌樹");
         },
         child: Text('test data insert'),
       ),
@@ -40,6 +40,13 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         },
         child: Text('query bookmgr_tbl'),
       ),
+      TextButton(
+        onPressed: () async {
+          await dp.query2();
+        },
+        child: Text('query2'),
+      ),
+
       TextButton(
         onPressed: () async {
           await dp.querybookname();
