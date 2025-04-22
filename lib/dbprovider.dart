@@ -38,6 +38,56 @@ class DatabaseProvider {
     return list;
   }
 
+  Future<void> updateById({
+    required int id,
+    int purchased = 0,
+    String? inputDate,
+    required String title,
+    String author = "",
+    String? publisher,
+    String? genre,
+    String comment = "",
+  }) async {
+    if (db == null) await openDB();
+    try {
+      inputDate = inputDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
+      publisher = publisher ?? Publisher.other.name;
+      genre = genre ?? BookGenre.other.name;
+
+      // 'CREATE TABLE bookmgr_tbl(
+      //id INTEGER,
+      //purchased INTEGER,
+      //date TEXT,
+      //title TEXT,
+      //author TEXT,
+      //publisher TEXT,
+      //genre TEXT,
+      //memo Text,
+      //PRIMARY KEY(id  AUTOINCREMENT))',
+
+      int count = await db!.rawUpdate('UPDATE bookmgr_tbl SET purchased=?, date=?, title=?, author=?, publisher=?, genre=?, memo=? WHERE id=?', [
+        purchased,
+        inputDate,
+        title,
+        author,
+        publisher,
+        genre,
+        comment,
+        id,
+      ]);
+
+      // var count = await db!.update(
+      //   'bookmgr_tbl',
+      //   {'purchased': '?', 'date': '?', 'title': '?', 'author': '?', 'publisher': '?', 'genre': '?', 'memo': '?'},
+      //   where: 'id = ?',
+      //   whereArgs: [purchased, inputDate, title, author, publisher, genre, comment, id],
+      // );
+      logger.i("dataInsert recordID $count");
+    } on DatabaseException catch (e) {
+      logger.e("DP testDataInserts() error ${e.toString()}");
+    }
+  }
+
   Future<void> dataInsert({
     int purchased = 0,
     String inputDate = "",

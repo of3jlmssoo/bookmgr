@@ -164,7 +164,8 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                       var dp = DatabaseProvider(databasefile: databaseName);
                       // TODO: Publisher to its name
                       // TODO: Genre to its name
-                      dp.dataInsert(title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
+                      // dp.dataInsert(title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
+                      dp.updateById(id: b.id!, title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
                       nameController.clear();
                       authorController.clear();
                       publisherController.clear();
@@ -180,7 +181,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                     dp.deleteById(id: widget.book.id!);
                     HomeRoute().go(context);
                   },
-                  child: Text('Delet'),
+                  child: Text('Delete'),
                 ),
               ],
             ),
