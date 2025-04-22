@@ -18,6 +18,14 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
+  Future<List> selectByID({required int id}) async {
+    if (db == null) await openDB();
+
+    List list;
+    list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE id = ?', [id]);
+    return list;
+  }
+
   Future<List> selectByGenre({required BookGenre genre}) async {
     if (db == null) await openDB();
 
@@ -95,14 +103,6 @@ class DatabaseProvider {
     if (db == null) await openDB();
     List<Map> list = [];
     try {
-      // id INTEGER,
-      // purchased INTEGER,
-      // date TEXT,
-      // title TEXT,
-      // author TEXT,
-      // publisher TEXT,
-      // genre
-      // memo Text,
       list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
       for (var l in list) {
         // logger.i("DP query() $l");
@@ -131,18 +131,6 @@ class DatabaseProvider {
   Future<void> testDataInsert() async {
     if (db == null) await openDB();
     testDataInserts(db!);
-
-    // try {
-    //   await db!.transaction((txn) async {
-    //     await txn.insert('exercise_list', {
-    //       'date': '2025/04/02',
-    //       'comment': 'テストコメント',
-    //     });
-    //     // await txn.delete('my_table', where: 'name = ?', whereArgs: ['cat']);
-    //   });
-    // } on DatabaseException catch (e) {
-    //   logger.e("DP inserts() ${e.toString()}");
-    // }
   }
 
   Future<List<String>> listTables() async {

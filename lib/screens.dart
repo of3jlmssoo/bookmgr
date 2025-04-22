@@ -39,15 +39,15 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   // final List<Map<dynamic, dynamic>> list;
 
   @override
-  State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState(genreID: genreID);
+  State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState();
 }
 
 class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
-  _ListRegisteredBooksByGenreScreenState({required this.genreID});
-  final int genreID;
+  _ListRegisteredBooksByGenreScreenState();
+  // final int genreID;
   Future<List<Widget>> getData() async {
     await Future.delayed(const Duration(seconds: 1));
-    return await listBooks3(genreID: genreID);
+    return await listBooks3(genreID: widget.genreID);
   }
 
   @override
@@ -100,14 +100,14 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
       for (int i = 0; i < lm.length; i++) {
         // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
         // logger.i("listBooks3() i=$i --- $lw");
-        var apg = lm[i]['id'].toString() + ' ' + lm[i]['author'] + ' ' + lm[i]['publisher'] + ' ' + lm[i]['genre'];
+        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']}";
         lw.add(
           ListTile(
             title: Text(lm[i]['title']),
             subtitle: Text(apg),
-            onTap: () {
+            onTap: () async {
               // TODO: display and change the entry
-              logger.i("ListTile tapped. ${lm[i]["id"]}");
+              logger.i("ListTile tapped. ${lm[i]["id"]} ${await dp.selectByID(id: lm[i]["id"])}");
             },
           ),
         );
