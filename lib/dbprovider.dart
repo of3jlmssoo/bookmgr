@@ -26,6 +26,15 @@ class DatabaseProvider {
     return list;
   }
 
+  // List<Map> list = await database.rawQuery('SELECT * FROM Test');
+  // TODO: rawquery select by genre and purchased
+  // TODO: rename the function
+  Future<List<Map>> selectWhere() async {
+    if (db == null) await openDB();
+    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl where');
+    return list;
+  }
+
   Future<List> selectByGenre({required BookGenre genre}) async {
     if (db == null) await openDB();
 
