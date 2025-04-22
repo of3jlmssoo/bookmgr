@@ -36,7 +36,7 @@ class SqlWorkRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => SqlWorkScreen();
 }
 
-// TODO: list books
+// DONE: list books
 @TypedGoRoute<ListRegisteredBooksRoute>(path: '/listregisteredbooks')
 class ListRegisteredBooksRoute extends GoRouteData {
   const ListRegisteredBooksRoute({required this.genreID});

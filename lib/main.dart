@@ -332,6 +332,6 @@ class MainPopouMenu extends StatelessWidget {
   }
 }
 
-// TODO: extract Scaffold to another file
-// TODO: list publishers
-// TODO: accept new book
+// DONE: extract Scaffold to another file
+// DONE: list publishers
+// DONE: accept new book

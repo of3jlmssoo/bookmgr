@@ -28,10 +28,10 @@ class SqlWorkScreen extends StatelessWidget {
 }
 
 // DONE: accept parameters
-// TODO: listview from SQL select
+// DONE: listview from SQL select
 // TODO: update a record "purchased"
 // TODO: update a record "comment"
-// TODO genreID to BookGenre enum
+// DONE genreID to BookGenre enum
 class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   ListRegisteredBooksByGenreScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
@@ -213,7 +213,6 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
                   },
                   child: Text('削除'),
                 ),
-                // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
               ],
         ),
       ),
