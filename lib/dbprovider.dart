@@ -91,9 +91,9 @@ class DatabaseProvider {
       //   where: 'id = ?',
       //   whereArgs: [purchased, inputDate, title, author, publisher, genre, comment, id],
       // );
-      logger.i("dataInsert recordID $count");
+      logger.i("updateby id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
     } on DatabaseException catch (e) {
-      logger.e("DP testDataInserts() error ${e.toString()}");
+      logger.e("DP update by id() error ${e.toString()}");
     }
   }
 
@@ -125,7 +125,7 @@ class DatabaseProvider {
       );
       logger.i("dataInsert recordID $recordId");
     } on DatabaseException catch (e) {
-      logger.e("DP testDataInserts() error ${e.toString()}");
+      logger.e("DP DataInserts() error ${e.toString()}");
     }
   }
 

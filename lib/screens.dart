@@ -107,7 +107,8 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                 requestFocusOnTap: true,
                 label: const Text('出版社'),
                 onSelected: (Publisher? publisher) {
-                  b = widget.book.copyWith(publisher: publisher);
+                  // b = widget.book.copyWith(publisher: publisher);
+                  b = b.copyWith(publisher: publisher);
                   logger.i("list change book publisher value $publisher b.name ${b.publisher}");
                 },
 
@@ -122,7 +123,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                 requestFocusOnTap: true,
                 label: const Text('ジャンル'),
                 onSelected: (BookGenre? genre) {
-                  b = widget.book.copyWith(genre: genre);
+                  b = b.copyWith(genre: genre);
                   logger.i("list change book genre value $genre b.name ${b.genre}");
                 },
                 dropdownMenuEntries: BookGenre.entries,
