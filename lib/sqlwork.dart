@@ -56,7 +56,8 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
       ),
       TextButton(
         onPressed: () async {
-          var list = await dp.selectByGenre(BookGenre.economy);
+          // var list = await dp.selectByGenre(BookGenre.economy);
+          var list = await dp.selectByGenre(genre: BookGenre.values[1]);
           logger.i("select by genre list $list");
         },
         child: Text('select by genre/economy'),

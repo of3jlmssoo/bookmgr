@@ -18,9 +18,15 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
-  Future<List> selectByGenre(BookGenre genre) async {
+  Future<List> selectByGenre({required BookGenre genre}) async {
     if (db == null) await openDB();
-    var list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', ['経済']);
+
+    List list;
+    if (genre == BookGenre.all) {
+      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
+    } else {
+      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
+    }
     return list;
   }
 

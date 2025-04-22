@@ -39,15 +39,15 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   // final List<Map<dynamic, dynamic>> list;
 
   @override
-  State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState();
+  State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState(genreID: genreID);
 }
 
 class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
   _ListRegisteredBooksByGenreScreenState({required this.genreID});
   final int genreID;
   Future<List<Widget>> getData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    return await listBooks3(genreID);
+    await Future.delayed(const Duration(seconds: 1));
+    return await listBooks3(genreID: genreID);
   }
 
   @override
@@ -87,19 +87,30 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
     // ),
   );
 
-  Future<List<Widget>> listBooks3({required BookGenre genre}) async {
+  Future<List<Widget>> listBooks3({required int genreID}) async {
     logger.i("listBooks3() called");
 
     if (true) {
       logger.i("listBooks3() then");
       DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-      List<Map> lm = await dp.query();
+      // List<Map> lm = await dp.query();
+      List lm = await dp.selectByGenre(genre: BookGenre.values[genreID]);
       logger.i("listBooks3() lm.length ${lm.length} lm $lm");
       List<Widget> lw = List.empty(growable: true);
       for (int i = 0; i < lm.length; i++) {
-        logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-        logger.i("listBooks3() i=$i --- $lw");
-        lw.add(ListTile(title: Text(lm[i]['title']), subtitle: Text(lm[i]['author'])));
+        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+        // logger.i("listBooks3() i=$i --- $lw");
+        var apg = lm[i]['id'].toString() + ' ' + lm[i]['author'] + ' ' + lm[i]['publisher'] + ' ' + lm[i]['genre'];
+        lw.add(
+          ListTile(
+            title: Text(lm[i]['title']),
+            subtitle: Text(apg),
+            onTap: () {
+              // TODO: display and change the entry
+              logger.i("ListTile tapped. ${lm[i]["id"]}");
+            },
+          ),
+        );
         logger.i("listBooks3() i=$i --- $lw");
       }
       return lw;
