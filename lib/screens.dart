@@ -1,7 +1,9 @@
 // dart run build_runner watch --delete-conflicting-outputs
 
+import 'package:bookmgr/book.dart';
 import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/dbprovider.dart';
+import 'package:bookmgr/routes.dart';
 import 'package:bookmgr/sqlwork.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,9 +24,181 @@ class SqlWorkScreen extends StatelessWidget {
   SqlWorkScreen({super.key}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL work')), body: sqlWorkBody(context, dp));
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL work')), body: Text("abc"));
 
   // Center sqlWorkBody(BuildContext context) => Center(child: ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')));
+}
+
+class ListAndChangeeRegisteredBook extends StatefulWidget {
+  const ListAndChangeeRegisteredBook({required this.book, super.key});
+  final Book book;
+
+  @override
+  State<ListAndChangeeRegisteredBook> createState() => _ListAndChangeeRegisteredBookState();
+}
+
+class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredBook> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController authorController = TextEditingController();
+  final TextEditingController publisherController = TextEditingController();
+  final TextEditingController genreController = TextEditingController();
+
+  late Book b = widget.book;
+  late bool? isChecked = b.purchased == 1;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('List and Change the book')),
+    body: SizedBox(width: double.infinity, child: SingleChildScrollView(child: listchangeBook(context))),
+  );
+
+  Form listchangeBook(BuildContext context) {
+    // isChecked = widget.book.purchased == 1;
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            initialValue: widget.book.name,
+            decoration: const InputDecoration(labelText: "書籍名"),
+            onSaved: (String? value) {
+              b = b.copyWith(name: value!);
+              logger.i("list change book name value $value b.name ${b.name}");
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '書籍名を入力してください';
+              }
+              return null;
+            },
+          ),
+          // Text("名称"),
+          // Text(book.name),
+          SizedBox(height: 10),
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            initialValue: widget.book.author ?? "",
+            decoration: const InputDecoration(labelText: "著者名"),
+            onSaved: (String? value) {
+              b = b.copyWith(author: value);
+              logger.i("list change book author value $value b.author ${b.author}");
+            },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) {
+            //     return '著者名を入力してください';
+            //   }
+            //   return null;
+            // },
+          ),
+          // Text("著者"),
+          // Text(book.author ?? "未登録"),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              DropdownMenu<Publisher>(
+                width: 130,
+                // initialSelection: Publisher.other,
+                initialSelection: widget.book.publisher,
+                controller: publisherController,
+                requestFocusOnTap: true,
+                label: const Text('出版社'),
+                onSelected: (Publisher? publisher) {
+                  b = widget.book.copyWith(publisher: publisher);
+                  logger.i("list change book publisher value $publisher b.name ${b.publisher}");
+                },
+
+                dropdownMenuEntries: Publisher.entries,
+              ),
+              SizedBox(width: 20),
+              DropdownMenu<BookGenre>(
+                width: 140,
+                // initialSelection: Publisher.other,
+                initialSelection: widget.book.genre,
+                controller: genreController,
+                requestFocusOnTap: true,
+                label: const Text('ジャンル'),
+                onSelected: (BookGenre? genre) {
+                  b = widget.book.copyWith(genre: genre);
+                  logger.i("list change book genre value $genre b.name ${b.genre}");
+                },
+                dropdownMenuEntries: BookGenre.entries,
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10),
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            initialValue: widget.book.comment ?? "",
+            decoration: const InputDecoration(labelText: "メモ"),
+            onSaved: (String? value) {
+              b = b.copyWith(comment: value ?? "");
+              logger.i("list change book comment value $value b.comment ${b.comment}");
+            },
+          ),
+          Checkbox(
+            value: isChecked,
+            onChanged: (bool? value) {
+              logger.i("list and change the book Checkbox value $value");
+              setState(() {
+                isChecked = value;
+                b = b.copyWith(purchased: value == true ? 1 : 0);
+              });
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
+
+                      logger.i('List and Change the book  b $b');
+                      var dp = DatabaseProvider(databasefile: databaseName);
+                      // TODO: Publisher to its name
+                      // TODO: Genre to its name
+                      dp.dataInsert(title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
+                      nameController.clear();
+                      authorController.clear();
+                      publisherController.clear();
+                      genreController.clear();
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    var dp = DatabaseProvider(databasefile: databaseName);
+                    dp.deleteById(id: widget.book.id!);
+                    HomeRoute().go(context);
+                  },
+                  child: Text('Delet'),
+                ),
+              ],
+            ),
+          ),
+          // Text("メモ"),
+          // Text(book.comment == null ? "未登録" : book.comment!),
+          ElevatedButton(
+            onPressed: () {
+              logger.i("List and Change widget.book ${widget.book}");
+              logger.i("List and Change b $b");
+            },
+            child: const Text('Check book'),
+          ),
+          ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
+        ],
+      ),
+    );
+  }
 }
 
 // DONE: accept parameters
@@ -107,7 +281,24 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
             subtitle: Text(apg),
             onTap: () async {
               // TODO: display and change the entry
-              logger.i("ListTile tapped. ${lm[i]["id"]} ${await dp.selectByID(id: lm[i]["id"])}");
+              List list = await dp.selectByID(id: lm[i]["id"]);
+              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+
+              Book book = Book(
+                id: lm[i]["id"],
+                purchased: lm[i]["purchased"],
+                date: lm[i]["date"],
+                name: lm[i]["title"],
+                author: lm[i]["author"],
+                publisher: p,
+                genre: g,
+                comment: lm[i]["memo"],
+              );
+              // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
+              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+              logger.i("ListTile changed?");
             },
           ),
         );

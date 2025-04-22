@@ -1,4 +1,5 @@
 // dart run build_runner watch --delete-conflicting-outputs
+import 'package:bookmgr/book.dart';
 import 'package:bookmgr/main.dart';
 import 'package:bookmgr/screens.dart';
 import 'package:flutter/material.dart';
@@ -52,4 +53,12 @@ class ListRegisteredBooksByPublisherRoute extends GoRouteData {
   final int publisherID;
   @override
   Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByPublisherScreen(pulisherID: publisherID);
+}
+
+@TypedGoRoute<ListAndChangeRegisteredBookRoute>(path: '/listandchangeregisteredbook')
+class ListAndChangeRegisteredBookRoute extends GoRouteData {
+  ListAndChangeRegisteredBookRoute(this.$extra);
+  final Book $extra;
+  @override
+  Widget build(BuildContext context, GoRouterState state) => ListAndChangeeRegisteredBook(book: $extra);
 }

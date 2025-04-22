@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Book {
 
- String get name; String? get author; Publisher? get publisher; BookGenre? get genre;
+ int? get id; int? get purchased; String? get date; String get name; String? get author; Publisher? get publisher; BookGenre? get genre; String? get comment;
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $BookCopyWith<Book> get copyWith => _$BookCopyWithImpl<Book>(this as Book, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Book&&(identical(other.id, id) || other.id == id)&&(identical(other.purchased, purchased) || other.purchased == purchased)&&(identical(other.date, date) || other.date == date)&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre)&&(identical(other.comment, comment) || other.comment == comment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,author,publisher,genre);
+int get hashCode => Object.hash(runtimeType,id,purchased,date,name,author,publisher,genre,comment);
 
 @override
 String toString() {
-  return 'Book(name: $name, author: $author, publisher: $publisher, genre: $genre)';
+  return 'Book(id: $id, purchased: $purchased, date: $date, name: $name, author: $author, publisher: $publisher, genre: $genre, comment: $comment)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $BookCopyWith<$Res>  {
   factory $BookCopyWith(Book value, $Res Function(Book) _then) = _$BookCopyWithImpl;
 @useResult
 $Res call({
- String name, String? author, Publisher? publisher, BookGenre? genre
+ int? id, int? purchased, String? date, String name, String? author, Publisher? publisher, BookGenre? genre, String? comment
 });
 
 
@@ -66,13 +66,17 @@ class _$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? purchased = freezed,Object? date = freezed,Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,Object? comment = freezed,}) {
   return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,purchased: freezed == purchased ? _self.purchased : purchased // ignore: cast_nullable_to_non_nullable
+as int?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
 as Publisher?,genre: freezed == genre ? _self.genre : genre // ignore: cast_nullable_to_non_nullable
-as BookGenre?,
+as BookGenre?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -83,13 +87,17 @@ as BookGenre?,
 @JsonSerializable()
 
 class _Book implements Book {
-  const _Book({required this.name, this.author, this.publisher, this.genre});
+  const _Book({this.id, this.purchased, this.date, required this.name, this.author, this.publisher, this.genre, this.comment});
   factory _Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
+@override final  int? id;
+@override final  int? purchased;
+@override final  String? date;
 @override final  String name;
 @override final  String? author;
 @override final  Publisher? publisher;
 @override final  BookGenre? genre;
+@override final  String? comment;
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
@@ -104,16 +112,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Book&&(identical(other.id, id) || other.id == id)&&(identical(other.purchased, purchased) || other.purchased == purchased)&&(identical(other.date, date) || other.date == date)&&(identical(other.name, name) || other.name == name)&&(identical(other.author, author) || other.author == author)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.genre, genre) || other.genre == genre)&&(identical(other.comment, comment) || other.comment == comment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,author,publisher,genre);
+int get hashCode => Object.hash(runtimeType,id,purchased,date,name,author,publisher,genre,comment);
 
 @override
 String toString() {
-  return 'Book(name: $name, author: $author, publisher: $publisher, genre: $genre)';
+  return 'Book(id: $id, purchased: $purchased, date: $date, name: $name, author: $author, publisher: $publisher, genre: $genre, comment: $comment)';
 }
 
 
@@ -124,7 +132,7 @@ abstract mixin class _$BookCopyWith<$Res> implements $BookCopyWith<$Res> {
   factory _$BookCopyWith(_Book value, $Res Function(_Book) _then) = __$BookCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String? author, Publisher? publisher, BookGenre? genre
+ int? id, int? purchased, String? date, String name, String? author, Publisher? publisher, BookGenre? genre, String? comment
 });
 
 
@@ -141,13 +149,17 @@ class __$BookCopyWithImpl<$Res>
 
 /// Create a copy of Book
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? purchased = freezed,Object? date = freezed,Object? name = null,Object? author = freezed,Object? publisher = freezed,Object? genre = freezed,Object? comment = freezed,}) {
   return _then(_Book(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,purchased: freezed == purchased ? _self.purchased : purchased // ignore: cast_nullable_to_non_nullable
+as int?,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
 as Publisher?,genre: freezed == genre ? _self.genre : genre // ignore: cast_nullable_to_non_nullable
-as BookGenre?,
+as BookGenre?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

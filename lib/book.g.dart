@@ -7,17 +7,25 @@ part of 'book.dart';
 // **************************************************************************
 
 _Book _$BookFromJson(Map<String, dynamic> json) => _Book(
+  id: (json['id'] as num?)?.toInt(),
+  purchased: (json['purchased'] as num?)?.toInt(),
+  date: json['date'] as String?,
   name: json['name'] as String,
   author: json['author'] as String?,
   publisher: $enumDecodeNullable(_$PublisherEnumMap, json['publisher']),
   genre: $enumDecodeNullable(_$BookGenreEnumMap, json['genre']),
+  comment: json['comment'] as String?,
 );
 
 Map<String, dynamic> _$BookToJson(_Book instance) => <String, dynamic>{
+  'id': instance.id,
+  'purchased': instance.purchased,
+  'date': instance.date,
   'name': instance.name,
   'author': instance.author,
   'publisher': _$PublisherEnumMap[instance.publisher],
   'genre': _$BookGenreEnumMap[instance.genre],
+  'comment': instance.comment,
 };
 
 const _$PublisherEnumMap = {

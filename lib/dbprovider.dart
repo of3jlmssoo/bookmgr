@@ -70,6 +70,12 @@ class DatabaseProvider {
     }
   }
 
+  Future<void> deleteById({required int id}) async {
+    if (db == null) await openDB();
+    var count = await db!.delete('bookmgr_tbl', where: 'id = ?', whereArgs: [id]);
+    logger.i("deleteById id $id --- count $count");
+  }
+
   Future<void> dropTable() async {
     if (db == null) await openDB();
     await db!.rawQuery('DROP TABLE IF EXISTS bookmgr_tbl');

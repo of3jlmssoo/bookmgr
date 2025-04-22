@@ -12,6 +12,7 @@ List<RouteBase> get $appRoutes => [
   $sqlWorkRoute,
   $listRegisteredBooksRoute,
   $listRegisteredBooksByPublisherRoute,
+  $listAndChangeRegisteredBookRoute,
 ];
 
 RouteBase get $listGenre => GoRouteData.$route(
@@ -131,4 +132,29 @@ extension $ListRegisteredBooksByPublisherRouteExtension
       context.pushReplacement(location);
 
   void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $listAndChangeRegisteredBookRoute => GoRouteData.$route(
+  path: '/listandchangeregisteredbook',
+
+  factory: $ListAndChangeRegisteredBookRouteExtension._fromState,
+);
+
+extension $ListAndChangeRegisteredBookRouteExtension
+    on ListAndChangeRegisteredBookRoute {
+  static ListAndChangeRegisteredBookRoute _fromState(GoRouterState state) =>
+      ListAndChangeRegisteredBookRoute(state.extra as Book);
+
+  String get location => GoRouteData.$location('/listandchangeregisteredbook');
+
+  void go(BuildContext context) => context.go(location, extra: $extra);
+
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: $extra);
+
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }
