@@ -10,7 +10,7 @@ List<RouteBase> get $appRoutes => [
   $listGenre,
   $homeRoute,
   $sqlWorkRoute,
-  $listRegisteredBooksRoute,
+  $listRegisteredBooksByGenreRoute,
   $listRegisteredBooksByPublisherRoute,
   $listAndChangeRegisteredBookRoute,
 ];
@@ -79,21 +79,26 @@ extension $SqlWorkRouteExtension on SqlWorkRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $listRegisteredBooksRoute => GoRouteData.$route(
+RouteBase get $listRegisteredBooksByGenreRoute => GoRouteData.$route(
   path: '/listregisteredbooks',
 
-  factory: $ListRegisteredBooksRouteExtension._fromState,
+  factory: $ListRegisteredBooksByGenreRouteExtension._fromState,
 );
 
-extension $ListRegisteredBooksRouteExtension on ListRegisteredBooksRoute {
-  static ListRegisteredBooksRoute _fromState(GoRouterState state) =>
-      ListRegisteredBooksRoute(
+extension $ListRegisteredBooksByGenreRouteExtension
+    on ListRegisteredBooksByGenreRoute {
+  static ListRegisteredBooksByGenreRoute _fromState(GoRouterState state) =>
+      ListRegisteredBooksByGenreRoute(
         genreID: int.parse(state.uri.queryParameters['genre-i-d']!)!,
+        isChecked: _$boolConverter(state.uri.queryParameters['is-checked']!)!,
       );
 
   String get location => GoRouteData.$location(
     '/listregisteredbooks',
-    queryParams: {'genre-i-d': genreID.toString()},
+    queryParams: {
+      'genre-i-d': genreID.toString(),
+      'is-checked': isChecked.toString(),
+    },
   );
 
   void go(BuildContext context) => context.go(location);
@@ -104,6 +109,17 @@ extension $ListRegisteredBooksRouteExtension on ListRegisteredBooksRoute {
       context.pushReplacement(location);
 
   void replace(BuildContext context) => context.replace(location);
+}
+
+bool _$boolConverter(String value) {
+  switch (value) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      throw UnsupportedError('Cannot convert "$value" into a bool.');
+  }
 }
 
 RouteBase get $listRegisteredBooksByPublisherRoute => GoRouteData.$route(
@@ -117,11 +133,15 @@ extension $ListRegisteredBooksByPublisherRouteExtension
   static ListRegisteredBooksByPublisherRoute _fromState(GoRouterState state) =>
       ListRegisteredBooksByPublisherRoute(
         publisherID: int.parse(state.uri.queryParameters['publisher-i-d']!)!,
+        isChecked: _$boolConverter(state.uri.queryParameters['is-checked']!)!,
       );
 
   String get location => GoRouteData.$location(
     '/listregisteredbooksbypublisher',
-    queryParams: {'publisher-i-d': publisherID.toString()},
+    queryParams: {
+      'publisher-i-d': publisherID.toString(),
+      'is-checked': isChecked.toString(),
+    },
   );
 
   void go(BuildContext context) => context.go(location);

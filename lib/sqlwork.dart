@@ -12,6 +12,7 @@ Center lstregbooksBody(BuildContext context, DatabaseProvider dp) => Center(
     children: [Text('list registered books'), ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen'))],
   ),
 );
+
 Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
   child: Column(
     children: [
@@ -62,6 +63,14 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         },
         child: Text('select by genre/economy'),
       ),
+      TextButton(
+        onPressed: () async {
+          var list = await dp.rawSelectWhereGenrePurchased(BookGenre.economy.name, '1');
+          logger.i("rawSelectWhereTwoConditions $list");
+        },
+        child: Text('rawSelectWhereTwoConditions'),
+      ),
+
       TextButton(
         onPressed: () async {
           await dp.deleteAllRows();

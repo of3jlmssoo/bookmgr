@@ -38,21 +38,23 @@ class SqlWorkRoute extends GoRouteData {
 }
 
 // DONE: list books
-@TypedGoRoute<ListRegisteredBooksRoute>(path: '/listregisteredbooks')
-class ListRegisteredBooksRoute extends GoRouteData {
-  const ListRegisteredBooksRoute({required this.genreID});
+@TypedGoRoute<ListRegisteredBooksByGenreRoute>(path: '/listregisteredbooks')
+class ListRegisteredBooksByGenreRoute extends GoRouteData {
+  const ListRegisteredBooksByGenreRoute({required this.genreID, required this.isChecked});
   final int genreID;
+  final bool isChecked;
   // final List<Map<dynamic, dynamic>> list;
   @override
-  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByGenreScreen(genreID: genreID);
+  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByGenreScreen(genreID: genreID, isChecked: isChecked);
 }
 
 @TypedGoRoute<ListRegisteredBooksByPublisherRoute>(path: '/listregisteredbooksbypublisher')
 class ListRegisteredBooksByPublisherRoute extends GoRouteData {
-  const ListRegisteredBooksByPublisherRoute({required this.publisherID});
+  const ListRegisteredBooksByPublisherRoute({required this.publisherID, required this.isChecked});
   final int publisherID;
+  final bool isChecked;
   @override
-  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByPublisherScreen(pulisherID: publisherID);
+  Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByPublisherScreen(pulisherID: publisherID, isChecked: isChecked);
 }
 
 @TypedGoRoute<ListAndChangeRegisteredBookRoute>(path: '/listandchangeregisteredbook')

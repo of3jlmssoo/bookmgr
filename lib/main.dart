@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 // import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -53,7 +54,7 @@ class App extends StatelessWidget {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -61,6 +62,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
+
+  bool? isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +81,26 @@ class _MyAppState extends State<MyApp> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 10),
-              Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
-              Wrap(children: listGenre(context)),
+              Row(
+                children: [
+                  Text("登録済み書籍確認", style: Theme.of(context).textTheme.displayMedium),
+                  SizedBox(width: 20),
+                  Checkbox(
+                    tristate: false,
+                    value: isChecked,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isChecked = value;
+                      });
+                    },
+                  ),
+                  Text("購入済みを含める"),
+                ],
+              ),
+              Wrap(children: listGenre(context, isChecked!)),
               SizedBox(height: 10),
               // DONE: change to by publisher
-              Wrap(children: listPublisher(context)),
+              Wrap(children: listPublisher(context, isChecked!)),
               SizedBox(height: 30),
               Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
               SizedBox(height: 16),
@@ -147,7 +165,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  List<Widget> listGenre(BuildContext context) {
+  List<Widget> listGenre(BuildContext context, bool isChecked) {
     List<Widget> result = [];
 
     for (var i = 0; i < BookGenre.values.length; i++) {
@@ -161,9 +179,10 @@ class _MyAppState extends State<MyApp> {
           onPressed: () async {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
             DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-            List<Map<dynamic, dynamic>> result = await dp.query();
+            // TODO: add isChecked to query (or select)
+            // List<Map<dynamic, dynamic>> result = await dp.query();
             logger.i("list by genre ${result.runtimeType} $result");
-            if (context.mounted) ListRegisteredBooksRoute(genreID: BookGenre.values[i].index).push(context);
+            if (context.mounted) ListRegisteredBooksByGenreRoute(genreID: BookGenre.values[i].index, isChecked: isChecked).push(context);
           },
           child: Text(BookGenre.values[i].name, style: TextStyle(color: Colors.black)),
         ),
@@ -172,7 +191,8 @@ class _MyAppState extends State<MyApp> {
     return result;
   }
 
-  List<Widget> listPublisher(BuildContext context) {
+  List<Widget> listPublisher(BuildContext context, bool isChecked) {
+    logger.i("listPublisher called ---  isChecked $isChecked");
     List<Widget> result = [];
 
     for (var i = 0; i < Publisher.values.length; i++) {
@@ -185,7 +205,7 @@ class _MyAppState extends State<MyApp> {
           ),
           onPressed: () {
             // logger.i('list books. number:$i --- genre ${Publisher.values[i].name} --- ${Publisher.values[i].runtimeType}');
-            ListRegisteredBooksByPublisherRoute(publisherID: Publisher.values[i].index).go(context);
+            ListRegisteredBooksByPublisherRoute(publisherID: Publisher.values[i].index, isChecked: isChecked).push(context);
           },
           child: Text(Publisher.values[i].name, style: TextStyle(color: Colors.black)),
         ),
@@ -295,7 +315,15 @@ class _InputBookFormState extends State<InputBookForm> {
                   // logger.i('InputBookForm class book ${book.name} ${book.author} $p');
                   logger.i('InputBookForm class book ${book.name} ${book.author} ${book.publisher} ${book.genre}');
                   var dp = DatabaseProvider(databasefile: databaseName);
-                  dp.dataInsert(title: book.name, author: book.author ?? "");
+                  dp.dataInsert(
+                    purchased: 0,
+                    inputDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                    title: book.name,
+                    author: book.author ?? "",
+                    publisher: book.publisher ?? Publisher.other,
+                    genre: book.genre ?? BookGenre.other,
+                  );
+
                   nameController.clear();
                   authorController.clear();
                   publisherController.clear();

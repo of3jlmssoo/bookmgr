@@ -27,12 +27,21 @@ class DatabaseProvider {
   }
 
   // List<Map> list = await database.rawQuery('SELECT * FROM Test');
-  // TODO: rawquery select by genre and purchased
-  // TODO: rename the function
-  Future<List<Map>> selectWhere() async {
+  // DONE: rawquery select by genre and purchased
+  // DONE: rename the function
+  Future<List<Map>> rawSelectWhereGenrePurchased(String val1, String val2) async {
     if (db == null) await openDB();
-    // var list = await db.rawQuery('SELECT * FROM my_table WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
-    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl where');
+    //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
+    // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
+    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2]);
+    return list;
+  }
+
+  Future<List<Map>> rawSelectWherePublisherPurchased(String val1, String val2) async {
+    if (db == null) await openDB();
+    //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
+    // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
+    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [val1, val2]);
     return list;
   }
 
@@ -44,6 +53,30 @@ class DatabaseProvider {
       list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
     } else {
       list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
+    }
+    return list;
+  }
+
+  // Future<List> selectByGenre({required BookGenre genre}) async {
+  //   if (db == null) await openDB();
+
+  //   List list;
+  //   if (genre == BookGenre.all) {
+  //     list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
+  //   } else {
+  //     list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
+  //   }
+  //   return list;
+  // }
+
+  Future<List> selectByPublisher({required Publisher publisher}) async {
+    if (db == null) await openDB();
+
+    List list;
+    if (publisher == Publisher.all) {
+      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
+    } else {
+      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher IN (?)', [publisher.name]);
     }
     return list;
   }
