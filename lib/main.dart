@@ -22,6 +22,7 @@ part 'main.g.dart';
 
 // var logger = Logger(printer: PrettyPrinter());
 // TODO: need to time out
+// TODO: add try to SQL statetments
 
 @riverpod
 String example(Ref ref) {
