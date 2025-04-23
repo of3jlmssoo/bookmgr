@@ -24,9 +24,8 @@ class SqlWorkScreen extends StatelessWidget {
   SqlWorkScreen({super.key}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL work')), body: Text("abc"));
-
-  // Center sqlWorkBody(BuildContext context) => Center(child: ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')));
+  // Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL work')), body: Text("abc"));
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL x 2 work')), body: sqlWorkBody(context, dp));
 }
 
 class ListAndChangeeRegisteredBook extends StatefulWidget {
@@ -163,10 +162,30 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
 
                       logger.i('List and Change the book  b $b');
                       var dp = DatabaseProvider(databasefile: databaseName);
-                      // TODO: Publisher to its name
-                      // TODO: Genre to its name
+                      // DONE: Publisher to its name
+                      // DONE: Genre to its name
                       // dp.dataInsert(title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
-                      dp.updateById(id: b.id!, title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
+
+                      // Future<void> updateById({
+                      //   required int id,
+                      //   int purchased = 0,
+                      //   String? inputDate,
+                      //   required String title,
+                      //   String author = "",
+                      //   String? publisher,
+                      //   String? genre,
+                      //   String comment = "",
+
+                      dp.updateById(
+                        id: b.id!,
+                        purchased: b.purchased ?? 0,
+                        inputDate: b.date ?? "",
+                        title: b.name,
+                        author: b.author ?? "",
+                        publisher: b.publisher?.name ?? "",
+                        genre: b.genre?.name ?? "",
+                        comment: b.comment ?? "",
+                      );
                       nameController.clear();
                       authorController.clear();
                       publisherController.clear();
@@ -205,8 +224,8 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
 
 // DONE: accept parameters
 // DONE: listview from SQL select
-// TODO: update a record "purchased"
-// TODO: update a record "comment"
+// DONE: update a record "purchased"
+// DONE: update a record "comment"
 // DONE genreID to BookGenre enum
 class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   ListRegisteredBooksByGenreScreen({super.key, required this.genreID}) : dp = DatabaseProvider(databasefile: databaseName);
@@ -282,7 +301,7 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
             title: Text(lm[i]['title']),
             subtitle: Text(apg),
             onTap: () async {
-              // TODO: display and change the entry
+              // DONE: display and change the entry
               List list = await dp.selectByID(id: lm[i]["id"]);
               logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
               var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];

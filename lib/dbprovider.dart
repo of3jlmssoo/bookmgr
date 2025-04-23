@@ -31,6 +31,7 @@ class DatabaseProvider {
   // TODO: rename the function
   Future<List<Map>> selectWhere() async {
     if (db == null) await openDB();
+    // var list = await db.rawQuery('SELECT * FROM my_table WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl where');
     return list;
   }
@@ -59,9 +60,11 @@ class DatabaseProvider {
   }) async {
     if (db == null) await openDB();
     try {
+      logger.i("updateById BEFORE inputDate $inputDate publisher $publisher genre $genre");
       inputDate = inputDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
       publisher = publisher ?? Publisher.other.name;
       genre = genre ?? BookGenre.other.name;
+      logger.i("updateById AFTER  inputDate $inputDate publisher $publisher genre $genre");
 
       // 'CREATE TABLE bookmgr_tbl(
       //id INTEGER,
@@ -91,7 +94,7 @@ class DatabaseProvider {
       //   where: 'id = ?',
       //   whereArgs: [purchased, inputDate, title, author, publisher, genre, comment, id],
       // );
-      logger.i("updateby id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
+      logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
     } on DatabaseException catch (e) {
       logger.e("DP update by id() error ${e.toString()}");
     }
@@ -230,9 +233,9 @@ class DatabaseProvider {
   }
 
   Future<void> openDB() async {
-    db == null
-        ? logger.i("DP openDB() called. db : null, databasefile : $databasefile")
-        : logger.i("DP openDB() called. db : $db, databasefile : $databasefile");
+    // db == null
+    //     ? logger.i("DP openDB() called. db : null, databasefile : $databasefile")
+    //     : logger.i("DP openDB() called. db : $db, databasefile : $databasefile");
     try {
       Directory? dbPath;
       if (Platform.isAndroid) {
@@ -243,7 +246,7 @@ class DatabaseProvider {
 
       path = join(dbPath!.path, databasefile);
 
-      logger.i("openDB()  dbPath : $dbPath --- dbPath.runtimeType : ${dbPath.runtimeType} --- databasefile : $databasefile");
+      // logger.i("openDB()  dbPath : $dbPath --- dbPath.runtimeType : ${dbPath.runtimeType} --- databasefile : $databasefile");
 
       db = await openDatabase(
         path,
@@ -252,7 +255,7 @@ class DatabaseProvider {
         },
         version: 1,
       );
-      logger.i("DP openDB() 1 db : $db");
+      // logger.i("DP openDB() 1 db : $db");
     } on DatabaseException catch (e) {
       logger.e("DP openDB() error ${e.toString()}");
     }
