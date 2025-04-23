@@ -111,7 +111,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                   logger.i("list change book publisher value $publisher b.name ${b.publisher}");
                 },
 
-                dropdownMenuEntries: Publisher.entries,
+                dropdownMenuEntries: Publisher.entries.getRange(0, Publisher.entries.length - 1).toList(),
               ),
               SizedBox(width: 20),
               DropdownMenu<BookGenre>(
@@ -125,7 +125,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                   b = b.copyWith(genre: genre);
                   logger.i("list change book genre value $genre b.name ${b.genre}");
                 },
-                dropdownMenuEntries: BookGenre.entries,
+                dropdownMenuEntries: BookGenre.entries.getRange(0, BookGenre.entries.length - 1).toList(),
               ),
             ],
           ),
@@ -191,6 +191,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                       publisherController.clear();
                       genreController.clear();
                     }
+                    HomeRoute().go(context);
                   },
                   child: const Text('Submit'),
                 ),

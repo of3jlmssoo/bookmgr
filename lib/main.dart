@@ -52,9 +52,14 @@ class App extends StatelessWidget {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -257,7 +262,7 @@ class _InputBookFormState extends State<InputBookForm> {
                   book = book.copyWith(publisher: publisher);
                 },
 
-                dropdownMenuEntries: Publisher.entries,
+                dropdownMenuEntries: Publisher.entries.getRange(0, Publisher.entries.length - 1).toList(),
               ),
               SizedBox(width: 20),
               DropdownMenu<BookGenre>(
@@ -269,7 +274,7 @@ class _InputBookFormState extends State<InputBookForm> {
                 onSelected: (BookGenre? genre) {
                   book = book.copyWith(genre: genre);
                 },
-                dropdownMenuEntries: BookGenre.entries,
+                dropdownMenuEntries: BookGenre.entries.getRange(0, BookGenre.entries.length - 1).toList(),
               ),
             ],
           ),
