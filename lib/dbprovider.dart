@@ -33,51 +33,70 @@ class DatabaseProvider {
     if (db == null) await openDB();
     //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
-    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2]);
-    return list;
+    try {
+      List<Map> list = await db!
+          .rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2])
+          .timeout(const Duration(seconds: 10));
+      return list;
+    } on DatabaseException catch (e) {
+      logger.e("rawSelectWhereGenrePurchased error ${e.toString()}");
+    }
+    // return list;
+    logger.e("rawSelectWhereGenrePurchased return null list");
+    return [];
   }
 
   Future<List<Map>> rawSelectWherePublisherPurchased(String val1, String val2) async {
     if (db == null) await openDB();
     //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
-    List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [val1, val2]);
-    return list;
+    try {
+      List<Map> list = await db!
+          .rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [val1, val2])
+          .timeout(const Duration(seconds: 10));
+      return list;
+    } on DatabaseException catch (e) {
+      logger.e("rawSelectWherePublisherPurchased error ${e.toString()}");
+    }
+    logger.e("rawSelectWherePublisherPurchased return null list");
+    return [];
   }
 
   Future<List> selectByGenre({required BookGenre genre}) async {
     if (db == null) await openDB();
 
-    List list;
-    if (genre == BookGenre.all) {
-      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
-    } else {
-      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
+    List list = [];
+
+    try {
+      if (genre == BookGenre.all) {
+        list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
+      } else {
+        list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
+      }
+    } on DatabaseException catch (e) {
+      logger.e("selectByGenre error ${e.toString()}");
     }
+
+    logger.e("selectByGenre return null list");
     return list;
   }
-
-  // Future<List> selectByGenre({required BookGenre genre}) async {
-  //   if (db == null) await openDB();
-
-  //   List list;
-  //   if (genre == BookGenre.all) {
-  //     list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
-  //   } else {
-  //     list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE genre IN (?)', [genre.name]);
-  //   }
-  //   return list;
-  // }
 
   Future<List> selectByPublisher({required Publisher publisher}) async {
     if (db == null) await openDB();
 
-    List list;
-    if (publisher == Publisher.all) {
-      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
-    } else {
-      list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher IN (?)', [publisher.name]);
+    List list = [];
+
+    try {
+      if (publisher == Publisher.all) {
+        list = await db!.rawQuery('SELECT * FROM bookmgr_tbl');
+      } else {
+        list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher IN (?)', [publisher.name]);
+      }
+      return list;
+    } on DatabaseException catch (e) {
+      logger.e("selectByPublisher error ${e.toString()}");
     }
+    logger.e("selectByPublisher return null list");
     return list;
   }
 
@@ -167,18 +186,34 @@ class DatabaseProvider {
 
   Future<void> deleteById({required int id}) async {
     if (db == null) await openDB();
-    var count = await db!.delete('bookmgr_tbl', where: 'id = ?', whereArgs: [id]);
+
+    var count = 0;
+    try {
+      var count = await db!.delete('bookmgr_tbl', where: 'id = ?', whereArgs: [id]);
+    } on DatabaseException catch (e) {
+      logger.e("deleteById error ${e.toString()}");
+    }
     logger.i("deleteById id $id --- count $count");
   }
 
   Future<void> dropTable() async {
     if (db == null) await openDB();
-    await db!.rawQuery('DROP TABLE IF EXISTS bookmgr_tbl');
+    try {
+      await db!.rawQuery('DROP TABLE IF EXISTS bookmgr_tbl');
+    } on DatabaseException catch (e) {
+      logger.e("dropTable error ${e.toString()}");
+    }
   }
 
   Future<int> deleteAllRows() async {
     if (db == null) await openDB();
-    return await db!.delete('bookmgr_tbl');
+    try {
+      return await db!.delete('bookmgr_tbl');
+    } on DatabaseException catch (e) {
+      logger.e("deleteAllRows error ${e.toString()}");
+    }
+
+    return 0;
   }
 
   Future<List<Widget>> query2() async {
@@ -237,12 +272,18 @@ class DatabaseProvider {
   Future<List<String>> listTables() async {
     if (db == null) await openDB();
     logger.i("DP listTables() db : $db");
-    var tableNames = (await db!.query(
-      'sqlite_master',
-      where: 'type = ?',
-      whereArgs: ['table'],
-    )).map((row) => row['name'] as String).toList(growable: false)..sort();
-    logger.i('listTables() $tableNames');
+
+    List<String> tableNames = [];
+    try {
+      tableNames = (await db!.query(
+        'sqlite_master',
+        where: 'type = ?',
+        whereArgs: ['table'],
+      )).map((row) => row['name'] as String).toList(growable: false)..sort();
+      logger.i('listTables() $tableNames');
+    } on DatabaseException catch (e) {
+      logger.e("DP listTables() error ${e.toString()}");
+    }
     return tableNames;
   }
 
