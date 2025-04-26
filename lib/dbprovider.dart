@@ -37,6 +37,35 @@ class DatabaseProvider {
   // 	by genre
   //
   // rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2])
+  Future<List<Map>> rawSelectWherePurchasedGenre(String genre, String purchased) async {
+    logger.i("rawSelectWherePurchasedGenre called");
+    if (db == null) await openDB();
+
+    // var list = await db!.rawQuery('SELECT * FROM bookmgr_tbl  WHERE purchased=? AND genre IN (${List.filled(inArgs.length, '?').join(',')})', whereArgs: inArgs);
+
+    // List<dynamic> inArgs = ['1'] + BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList();
+    List inArgs;
+    if (genre == BookGenre.all.name) {
+      inArgs = [purchased] + BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList();
+    } else {
+      inArgs = [purchased] + [genre];
+    }
+    var result = await db!.query(
+      'bookmgr_tbl',
+      where: 'purchased = ? AND genre IN (${List.filled(inArgs.length - 1, '?').join(',')})',
+      whereArgs: inArgs,
+    );
+    // var result = await db!.query('bookmgr_tbl', where: 'purchased = 0 AND genre IN (?, ?)', whereArgs: ['経済', '宗教']);
+    // var result = await db!.query('bookmgr_tbl', where: 'genre IN (?, ?)', whereArgs: ['経済', '宗教']);
+    // logger.i("rawSelectWherePurchasedGenre result.length ${result.length}");
+    // logger.i("rawSelectWherePurchasedGenre ->  ${BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList()}");
+    logger.i("rawSelectWherePurchasedGenre ->  ${result.length} $result");
+    return result;
+
+    // return <Map>[
+    //   {"abc": "def"},
+    // ];
+  }
 
   // List<Map> list = await database.rawQuery('SELECT * FROM Test');
   // DONE: rawquery select by genre and purchased

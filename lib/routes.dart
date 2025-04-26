@@ -64,3 +64,12 @@ class ListAndChangeRegisteredBookRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => ListAndChangeeRegisteredBook(book: $extra);
 }
+
+@TypedGoRoute<ListPurchasedBookRoute>(path: '/listpurchaseddbook')
+class ListPurchasedBookRoute extends GoRouteData {
+  ListPurchasedBookRoute({required this.publisherID, required this.isChecked});
+  int publisherID;
+  bool isChecked;
+  @override
+  Widget build(BuildContext context, GoRouterState state) => ListPurchasedBooksScreen(pulisherID: publisherID, isChecked: isChecked);
+}

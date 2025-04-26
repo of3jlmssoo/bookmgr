@@ -110,7 +110,13 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 16),
               // TODO: add function to list purchased books
               // TODO: add filter, by publisher, by genre
-              ElevatedButton(onPressed: () {}, child: Text("submit")),
+              ElevatedButton(
+                onPressed: () {
+                  logger.i("購入済み書籍情報");
+                  ListPurchasedBookRoute(publisherID: Publisher.all.index, isChecked: true).push(context);
+                },
+                child: Text("submit"),
+              ),
               SizedBox(height: 30),
               Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
               SizedBox(height: 15),

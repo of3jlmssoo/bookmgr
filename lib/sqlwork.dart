@@ -70,7 +70,13 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         },
         child: Text('rawSelectWhereTwoConditions'),
       ),
-
+      TextButton(
+        onPressed: () async {
+          var list = await dp.rawSelectWherePurchasedGenre(BookGenre.economy.name, '0');
+          logger.i("rawSelectWherePurchasedGenre caller --> ${list.length} $list");
+        },
+        child: Text('rawSelectWherePurchasedGenre(new)'),
+      ),
       TextButton(
         onPressed: () async {
           await dp.deleteAllRows();

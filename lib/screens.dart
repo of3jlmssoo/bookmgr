@@ -277,26 +277,15 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
         return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
       },
     ),
-    // body: Column(
-    //   children: [
-    //     LimitedBox(
-    //       maxHeight: 500,
-    //       child: ListView(
-    //         // shrinkWrap: true,
-    //         padding: const EdgeInsets.all(8),
-    //         children: listBooks(),
-    //       ),
-    //     ),
-    //     ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
-    //   ],
-    // ),
   );
 
   Future<List<Widget>> listBooks3({required int genreID, required bool isChecked}) async {
     logger.i("listBooks3() called");
 
-    if (true) {
-      logger.i("listBooks3() then");
+    // TODO: if genreID == 全て
+    if (genreID == BookGenre.all.index) {
+      // TODO: call dp.
+    } else {
       DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
       // List<Map> lm = await dp.query();
       // List lm = await dp.selectByGenre(genre: BookGenre.values[genreID]);
@@ -340,8 +329,10 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
         );
         logger.i("listBooks3() i=$i --- $lw");
       }
+
       return lw;
     }
+    return [ListTile(title: Text("Sorry"), subtitle: Text("unable provide"))];
   }
 
   List<Widget> listBooks() {
@@ -471,7 +462,7 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
           isChecked == true
               ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
               : await dp.rawSelectWherePublisherPurchased(Publisher.values[publisherID].name, '0');
-      logger.i("listBooks3() lm.length ${lm.length} lm $lm");
+      logger.i("listBooks4() lm.length ${lm.length} lm $lm");
       List<Widget> lw = List.empty(growable: true);
       for (int i = 0; i < lm.length; i++) {
         // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
@@ -504,7 +495,103 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
             },
           ),
         );
-        logger.i("listBooks3() i=$i --- $lw");
+        logger.i("listBooks4() i=$i --- $lw");
+      }
+      return lw;
+    }
+  }
+}
+
+class ListPurchasedBooksScreen extends StatefulWidget {
+  ListPurchasedBooksScreen({super.key, required this.pulisherID, required this.isChecked}) : dp = DatabaseProvider(databasefile: databaseName);
+  final DatabaseProvider dp;
+  final int pulisherID;
+  final bool isChecked;
+
+  @override
+  State<ListPurchasedBooksScreen> createState() => _ListPurchasedBooksScreenState();
+}
+
+class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
+  _ListPurchasedBooksScreenState();
+  Future<List<Widget>> getData() async {
+    logger.i("_ListPurchasedBooksScreenState called.");
+    await Future.delayed(const Duration(seconds: 1));
+    return await listBooks5(publisherID: widget.pulisherID, isChecked: widget.isChecked);
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      title: Text('購入済み書籍一覧 ${Publisher.values[widget.pulisherID].name}'),
+    ),
+    // body: lstregbooksBody(context, widget.dp),
+    body: FutureBuilder<List<Widget>>(
+      future: getData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget>? categories = snapshot.data;
+          logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          return ListView.builder(
+            itemCount: categories!.length,
+            itemBuilder: (context, index) {
+              return categories[index];
+            },
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+        }
+        return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+      },
+    ),
+  );
+
+  Future<List<Widget>> listBooks5({required int publisherID, required bool isChecked}) async {
+    logger.i("listBooks5() called -- publisherID $publisherID --- isChecked $isChecked");
+
+    if (true) {
+      logger.i("listBooks5() then");
+      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+      // List lm =
+      //     isChecked == true
+      //         ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
+      //         : await dp.rawSelectWherePublisherPurchased(Publisher.values[publisherID].name, '0');
+      List lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '1');
+      logger.i("listBooks5() lm.length ${lm.length} lm $lm");
+      List<Widget> lw = List.empty(growable: true);
+      for (int i = 0; i < lm.length; i++) {
+        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+        // logger.i("listBooks3() i=$i --- $lw");
+        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+        lw.add(
+          ListTile(
+            title: Text(lm[i]['title']),
+            subtitle: Text(apg),
+            onTap: () async {
+              // DONE: display and change the entry
+              List list = await dp.selectByID(id: lm[i]["id"]);
+              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+
+              Book book = Book(
+                id: lm[i]["id"],
+                purchased: lm[i]["purchased"],
+                date: lm[i]["date"],
+                name: lm[i]["title"],
+                author: lm[i]["author"],
+                publisher: p,
+                genre: g,
+                comment: lm[i]["memo"],
+              );
+              // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
+              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+              logger.i("ListTile changed?");
+            },
+          ),
+        );
+        logger.i("listBooks5() i=$i --- $lw");
       }
       return lw;
     }

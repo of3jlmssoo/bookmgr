@@ -13,6 +13,7 @@ List<RouteBase> get $appRoutes => [
   $listRegisteredBooksByGenreRoute,
   $listRegisteredBooksByPublisherRoute,
   $listAndChangeRegisteredBookRoute,
+  $listPurchasedBookRoute,
 ];
 
 RouteBase get $listGenre => GoRouteData.$route(
@@ -177,4 +178,35 @@ extension $ListAndChangeRegisteredBookRouteExtension
 
   void replace(BuildContext context) =>
       context.replace(location, extra: $extra);
+}
+
+RouteBase get $listPurchasedBookRoute => GoRouteData.$route(
+  path: '/listpurchaseddbook',
+
+  factory: $ListPurchasedBookRouteExtension._fromState,
+);
+
+extension $ListPurchasedBookRouteExtension on ListPurchasedBookRoute {
+  static ListPurchasedBookRoute _fromState(GoRouterState state) =>
+      ListPurchasedBookRoute(
+        publisherID: int.parse(state.uri.queryParameters['publisher-i-d']!)!,
+        isChecked: _$boolConverter(state.uri.queryParameters['is-checked']!)!,
+      );
+
+  String get location => GoRouteData.$location(
+    '/listpurchaseddbook',
+    queryParams: {
+      'publisher-i-d': publisherID.toString(),
+      'is-checked': isChecked.toString(),
+    },
+  );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
