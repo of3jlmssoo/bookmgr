@@ -38,7 +38,7 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
       ),
       TextButton(
         onPressed: () async {
-          logger.i("${await dp.query()}");
+          logger.i("${await dp.userquery()}");
         },
         child: Text('query bookmgr_tbl'),
       ),

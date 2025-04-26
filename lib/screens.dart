@@ -140,15 +140,23 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
               logger.i("list change book comment value $value b.comment ${b.comment}");
             },
           ),
-          Checkbox(
-            value: isChecked,
-            onChanged: (bool? value) {
-              logger.i("list and change the book Checkbox value $value");
-              setState(() {
-                isChecked = value;
-                b = b.copyWith(purchased: value == true ? 1 : 0);
-              });
-            },
+          // DONE: add height
+          // DONE: add row 購入済み and Checkbox
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Text("購入済"),
+              Checkbox(
+                value: isChecked,
+                onChanged: (bool? value) {
+                  logger.i("list and change the book Checkbox value $value");
+                  setState(() {
+                    isChecked = value;
+                    b = b.copyWith(purchased: value == true ? 1 : 0);
+                  });
+                },
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -333,41 +341,6 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
         logger.i("listBooks3() i=$i --- $lw");
       }
       return lw;
-    } else {
-      List<Widget> result = [
-        ListTile(
-          title: const Text('蜘蛛女のキス'),
-          subtitle: const Text('プイグ'),
-          trailing: PopupMenuButton<ListTileTitleAlignment>(
-            onSelected: (ListTileTitleAlignment? value) {
-              // titleAlignment = value;
-            },
-            itemBuilder:
-                (BuildContext context) => <PopupMenuEntry<ListTileTitleAlignment>>[
-                  PopupMenuItem<ListTileTitleAlignment>(
-                    onTap: () {
-                      logger.i("add comment");
-                    },
-                    child: Text('コメント追加'),
-                  ),
-                  PopupMenuItem<ListTileTitleAlignment>(
-                    onTap: () {
-                      logger.i("purcahsed");
-                    },
-                    child: Text('購入'),
-                  ),
-                  PopupMenuItem<ListTileTitleAlignment>(
-                    onTap: () {
-                      logger.i("delete");
-                    },
-                    child: Text('削除'),
-                  ),
-                  // const PopupMenuItem<ListTileTitleAlignment>(value: ListTileTitleAlignment.top, child: Text('削除')),
-                ],
-          ),
-        ),
-      ];
-      return result;
     }
   }
 
@@ -486,7 +459,7 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
   );
 
   Future<List<Widget>> listBooks4({required int publisherID, required bool isChecked}) async {
-    logger.i("listBooks4() called -- publisherID ${publisherID} --- isChecked ${isChecked}");
+    logger.i("listBooks4() called -- publisherID $publisherID --- isChecked $isChecked");
 
     if (true) {
       logger.i("listBooks4() then");

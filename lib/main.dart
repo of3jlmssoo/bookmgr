@@ -62,6 +62,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+// TODO: 全て対応 by genre
+// TODO: 全て対応 by publisher
 class _MyAppState extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
 

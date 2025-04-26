@@ -26,17 +26,29 @@ class DatabaseProvider {
     return list;
   }
 
+  // 登録済み書籍をリスト
+  // 	by publisher
+  // 	by genre
+  // 購入済み書籍をリスト
+  // 	by publisher
+  // 	by genre
+  // 登録済みと購入済み書籍をリスト
+  // 	by publisher
+  // 	by genre
+  //
+  // rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2])
+
   // List<Map> list = await database.rawQuery('SELECT * FROM Test');
   // DONE: rawquery select by genre and purchased
   // DONE: rename the function
-  Future<List<Map>> rawSelectWhereGenrePurchased(String val1, String val2) async {
+  Future<List<Map>> rawSelectWhereGenrePurchased(String genre, String purchased) async {
     if (db == null) await openDB();
     //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
     try {
       logger.i("rawSelectWhereGenrePurchased in then");
       List<Map> list = await db!
-          .rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2])
+          .rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [genre, purchased])
           .timeout(
             const Duration(seconds: 10),
             onTimeout:
@@ -53,13 +65,13 @@ class DatabaseProvider {
     return [];
   }
 
-  Future<List<Map>> rawSelectWherePublisherPurchased(String val1, String val2) async {
+  Future<List<Map>> rawSelectWherePublisherPurchased(String publisher, String purchase) async {
     if (db == null) await openDB();
     //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
     try {
       List<Map> list = await db!
-          .rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [val1, val2])
+          .rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [publisher, purchase])
           .timeout(const Duration(seconds: 10));
       return list;
     } on DatabaseException catch (e) {
@@ -105,6 +117,56 @@ class DatabaseProvider {
     }
     logger.e("selectByPublisher return null list");
     return list;
+  }
+
+  // SQL WORKでのみ使用
+  Future<List<Widget>> query2() async {
+    if (db == null) await openDB();
+    List<Widget> result = [];
+    try {
+      var list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      for (var l in list) {
+        var str4subtitle = "${l['author']}  ${l["publisher"]}";
+        // logger.i("query2() ${l["title"]} --- $str4subtitle");
+        result.add(ListTile(title: Text(l["title"].toString()), subtitle: Text(str4subtitle)));
+      }
+      // logger.i('DP query() $result');
+      // logger.i('DP query() ${result[0]}');
+      return result;
+    } on DatabaseException catch (e) {
+      logger.e("DP query() error ${e.toString()}");
+    }
+    return result;
+  }
+
+  // unused
+  Future<List<Map>> userquery() async {
+    if (db == null) await openDB();
+    List<Map> list = [];
+    try {
+      list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      // for (var l in list) {
+      //   logger.i("DP query() $l");
+      // }
+      // logger.i('DP query() $list');
+      return list;
+    } on DatabaseException catch (e) {
+      logger.e("DP query() error ${e.toString()}");
+    }
+    return list;
+  }
+
+  Future<void> querybookname() async {
+    if (db == null) await openDB();
+    try {
+      var list = await db!.query('bookmgr_tbl', columns: ['title']);
+      for (var l in list) {
+        logger.i("DP query() $l");
+      }
+      logger.i('DP query() $list');
+    } on DatabaseException catch (e) {
+      logger.e("DP query() error ${e.toString()}");
+    }
   }
 
   Future<void> updateById({
@@ -196,7 +258,7 @@ class DatabaseProvider {
 
     var count = 0;
     try {
-      var count = await db!.delete('bookmgr_tbl', where: 'id = ?', whereArgs: [id]);
+      count = await db!.delete('bookmgr_tbl', where: 'id = ?', whereArgs: [id]);
     } on DatabaseException catch (e) {
       logger.e("deleteById error ${e.toString()}");
     }
@@ -221,54 +283,6 @@ class DatabaseProvider {
     }
 
     return 0;
-  }
-
-  Future<List<Widget>> query2() async {
-    if (db == null) await openDB();
-    List<Widget> result = [];
-    try {
-      var list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
-      for (var l in list) {
-        var str4subtitle = "${l['author']}  ${l["publisher"]}";
-        // logger.i("query2() ${l["title"]} --- $str4subtitle");
-        result.add(ListTile(title: Text(l["title"].toString()), subtitle: Text(str4subtitle)));
-      }
-      // logger.i('DP query() $result');
-      // logger.i('DP query() ${result[0]}');
-      return result;
-    } on DatabaseException catch (e) {
-      logger.e("DP query() error ${e.toString()}");
-    }
-    return result;
-  }
-
-  Future<List<Map>> query() async {
-    if (db == null) await openDB();
-    List<Map> list = [];
-    try {
-      list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
-      for (var l in list) {
-        // logger.i("DP query() $l");
-      }
-      // logger.i('DP query() $list');
-      return list;
-    } on DatabaseException catch (e) {
-      logger.e("DP query() error ${e.toString()}");
-    }
-    return list;
-  }
-
-  Future<void> querybookname() async {
-    if (db == null) await openDB();
-    try {
-      var list = await db!.query('bookmgr_tbl', columns: ['title']);
-      for (var l in list) {
-        logger.i("DP query() $l");
-      }
-      logger.i('DP query() $list');
-    } on DatabaseException catch (e) {
-      logger.e("DP query() error ${e.toString()}");
-    }
   }
 
   Future<void> testDataInsert() async {
