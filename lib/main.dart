@@ -21,8 +21,8 @@ import 'loggerdef.dart';
 part 'main.g.dart';
 
 // var logger = Logger(printer: PrettyPrinter());
-// TODO: need to time out
-// TODO: add try to SQL statetments
+// DONE: need to time out
+// DONE: add try to SQL statetments
 
 @riverpod
 String example(Ref ref) {
@@ -106,6 +106,8 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 30),
               Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
               SizedBox(height: 16),
+              // TODO: add function to list purchased books
+              // TODO: add filter, by publisher, by genre
               ElevatedButton(onPressed: () {}, child: Text("submit")),
               SizedBox(height: 30),
               Text("書籍情報入力", style: Theme.of(context).textTheme.displayMedium),
@@ -180,8 +182,8 @@ class _MyAppState extends State<MyApp> {
           ),
           onPressed: () async {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
-            DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-            // TODO: add isChecked to query (or select)
+            // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+            // DONE: add isChecked to query (or select)
             // List<Map<dynamic, dynamic>> result = await dp.query();
             logger.i("list by genre ${result.runtimeType} $result");
             if (context.mounted) ListRegisteredBooksByGenreRoute(genreID: BookGenre.values[i].index, isChecked: isChecked).push(context);

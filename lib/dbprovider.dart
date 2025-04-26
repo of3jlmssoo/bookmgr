@@ -34,9 +34,16 @@ class DatabaseProvider {
     //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
     // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
     try {
+      logger.i("rawSelectWhereGenrePurchased in then");
       List<Map> list = await db!
           .rawQuery('SELECT * FROM bookmgr_tbl WHERE genre = ? AND purchased=?', [val1, val2])
-          .timeout(const Duration(seconds: 10));
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
       return list;
     } on DatabaseException catch (e) {
       logger.e("rawSelectWhereGenrePurchased error ${e.toString()}");
