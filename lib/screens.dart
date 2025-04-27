@@ -24,7 +24,6 @@ class SqlWorkScreen extends StatelessWidget {
   SqlWorkScreen({super.key}) : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   @override
-  // Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL work')), body: Text("abc"));
   Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('SQL x 2 work')), body: sqlWorkBody(context, dp));
 }
 
@@ -53,7 +52,6 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
   );
 
   Form listchangeBook(BuildContext context) {
-    // isChecked = widget.book.purchased == 1;
     return Form(
       key: _formKey,
       child: Column(
@@ -75,8 +73,6 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
               return null;
             },
           ),
-          // Text("名称"),
-          // Text(book.name),
           SizedBox(height: 10),
           TextFormField(
             // The validator receives the text that the user has entered.
@@ -93,8 +89,6 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
             //   return null;
             // },
           ),
-          // Text("著者"),
-          // Text(book.author ?? "未登録"),
           SizedBox(height: 10),
           Row(
             children: [
@@ -172,18 +166,6 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                       var dp = DatabaseProvider(databasefile: databaseName);
                       // DONE: Publisher to its name
                       // DONE: Genre to its name
-                      // dp.dataInsert(title: b.name, author: b.author ?? "", purchased: b.purchased ?? 0, comment: b.comment ?? "");
-
-                      // Future<void> updateById({
-                      //   required int id,
-                      //   int purchased = 0,
-                      //   String? inputDate,
-                      //   required String title,
-                      //   String author = "",
-                      //   String? publisher,
-                      //   String? genre,
-                      //   String comment = "",
-
                       dp.updateById(
                         id: b.id!,
                         purchased: b.purchased ?? 0,
@@ -215,8 +197,6 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
               ],
             ),
           ),
-          // Text("メモ"),
-          // Text(book.comment == null ? "未登録" : book.comment!),
           ElevatedButton(
             onPressed: () {
               logger.i("List and Change widget.book ${widget.book}");
@@ -241,7 +221,6 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
   final DatabaseProvider dp;
   final int genreID;
   final bool isChecked;
-  // final List<Map<dynamic, dynamic>> list;
 
   @override
   State<ListRegisteredBooksByGenreScreen> createState() => _ListRegisteredBooksByGenreScreenState();
@@ -249,7 +228,6 @@ class ListRegisteredBooksByGenreScreen extends StatefulWidget {
 
 class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksByGenreScreen> {
   _ListRegisteredBooksByGenreScreenState();
-  // final int genreID;
   Future<List<Widget>> getData() async {
     await Future.delayed(const Duration(seconds: 1));
     return await listBooks3(genreID: widget.genreID, isChecked: widget.isChecked);
@@ -258,7 +236,6 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: Text('登録済み書籍一覧 ${BookGenre.values[widget.genreID].name}')),
-    // body: lstregbooksBody(context, dp),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
       builder: (context, snapshot) {
@@ -288,9 +265,6 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
       // TODO: call dp.
       lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '0');
     } else {
-      // List<Map> lm = await dp.query();
-      // List lm = await dp.selectByGenre(genre: BookGenre.values[genreID]);
-      // lm = await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
       lm =
           isChecked == true
               ? await dp.selectByGenre(genre: BookGenre.values[genreID])
@@ -323,7 +297,6 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
               genre: g,
               comment: lm[i]["memo"],
             );
-            // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
             if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
             logger.i("ListTile changed?");
           },
@@ -333,13 +306,9 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
     }
 
     return lw;
-    // }
-    // return [ListTile(title: Text("Sorry"), subtitle: Text("unable provide"))];
   }
 
   List<Widget> listBooks() {
-    // ListTileTitleAlignment? titleAlignment;
-    // var list = await widget.dp.query();
     // logger.i("listBooks called --- $list");
     return <Widget>[
       ListTile(
@@ -430,7 +399,6 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       title: Text('登録済み書籍一覧 ${Publisher.values[widget.pulisherID].name}'),
     ),
-    // body: lstregbooksBody(context, widget.dp),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
       builder: (context, snapshot) {
@@ -457,9 +425,6 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
     if (true) {
       logger.i("listBooks4() then");
       DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-      // List<Map> lm = await dp.query();
-      // List lm = await dp.selectByGenre(genre: BookGenre.values[genreID]);
-      // lm = await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
       List lm =
           isChecked == true
               ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
@@ -491,7 +456,6 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
                 genre: g,
                 comment: lm[i]["memo"],
               );
-              // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
               if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
               logger.i("ListTile changed?");
             },
@@ -528,7 +492,6 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       title: Text('購入済み書籍一覧 ${Publisher.values[widget.pulisherID].name}'),
     ),
-    // body: lstregbooksBody(context, widget.dp),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
       builder: (context, snapshot) {
@@ -555,10 +518,7 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
     if (true) {
       logger.i("listBooks5() then");
       DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-      // List lm =
-      //     isChecked == true
-      //         ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
-      //         : await dp.rawSelectWherePublisherPurchased(Publisher.values[publisherID].name, '0');
+
       List lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '1');
       logger.i("listBooks5() lm.length ${lm.length} lm $lm");
       List<Widget> lw = List.empty(growable: true);
@@ -587,7 +547,6 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
                 genre: g,
                 comment: lm[i]["memo"],
               );
-              // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
               if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
               logger.i("ListTile changed?");
             },

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-// import 'package:bookmgr/main.dart';
 import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/testdatainserts.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +40,6 @@ class DatabaseProvider {
     logger.i("rawSelectWherePurchasedGenre called");
     if (db == null) await openDB();
 
-    // var list = await db!.rawQuery('SELECT * FROM bookmgr_tbl  WHERE purchased=? AND genre IN (${List.filled(inArgs.length, '?').join(',')})', whereArgs: inArgs);
-
-    // List<dynamic> inArgs = ['1'] + BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList();
     List inArgs;
     if (genre == BookGenre.all.name) {
       inArgs = [purchased] + BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList();
@@ -55,25 +51,14 @@ class DatabaseProvider {
       where: 'purchased = ? AND genre IN (${List.filled(inArgs.length - 1, '?').join(',')})',
       whereArgs: inArgs,
     );
-    // var result = await db!.query('bookmgr_tbl', where: 'purchased = 0 AND genre IN (?, ?)', whereArgs: ['経済', '宗教']);
-    // var result = await db!.query('bookmgr_tbl', where: 'genre IN (?, ?)', whereArgs: ['経済', '宗教']);
-    // logger.i("rawSelectWherePurchasedGenre result.length ${result.length}");
-    // logger.i("rawSelectWherePurchasedGenre ->  ${BookGenre.values.getRange(0, BookGenre.entries.length - 1).toList().map((g) => g.name).toList()}");
     logger.i("rawSelectWherePurchasedGenre ->  ${result.length} $result");
     return result;
-
-    // return <Map>[
-    //   {"abc": "def"},
-    // ];
   }
 
-  // List<Map> list = await database.rawQuery('SELECT * FROM Test');
   // DONE: rawquery select by genre and purchased
   // DONE: rename the function
   Future<List<Map>> rawSelectWhereGenrePurchased(String genre, String purchased) async {
     if (db == null) await openDB();
-    //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
-    // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
     try {
       logger.i("rawSelectWhereGenrePurchased in then");
       List<Map> list = await db!
@@ -89,15 +74,12 @@ class DatabaseProvider {
     } on DatabaseException catch (e) {
       logger.e("rawSelectWhereGenrePurchased error ${e.toString()}");
     }
-    // return list;
     logger.e("rawSelectWhereGenrePurchased return null list");
     return [];
   }
 
   Future<List<Map>> rawSelectWherePublisherPurchased(String publisher, String purchase) async {
     if (db == null) await openDB();
-    //     var list = await db.rawQuery('SELECT * FROM my_table    WHERE name IN (?, ?, ?)', ['cat', 'dog', 'fish']);
-    // List<Map> list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE ? = ?, ? = ?', [col1, val1, col2, val2]);
     try {
       List<Map> list = await db!
           .rawQuery('SELECT * FROM bookmgr_tbl WHERE publisher = ? AND purchased=?', [publisher, purchase])
@@ -175,10 +157,6 @@ class DatabaseProvider {
     try {
       list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
       logger.i("userquery() length ${list.length}");
-      // for (var l in list) {
-      //   logger.i("DP query() $l");
-      // }
-      // logger.i('DP query() $list');
       return list;
     } on DatabaseException catch (e) {
       logger.e("DP query() error ${e.toString()}");
@@ -240,12 +218,6 @@ class DatabaseProvider {
         id,
       ]);
 
-      // var count = await db!.update(
-      //   'bookmgr_tbl',
-      //   {'purchased': '?', 'date': '?', 'title': '?', 'author': '?', 'publisher': '?', 'genre': '?', 'memo': '?'},
-      //   where: 'id = ?',
-      //   whereArgs: [purchased, inputDate, title, author, publisher, genre, comment, id],
-      // );
       logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
     } on DatabaseException catch (e) {
       logger.e("DP update by id() error ${e.toString()}");
@@ -345,13 +317,6 @@ class DatabaseProvider {
       await db!.execute(
         'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
       );
-
-      // await db!.execute(sqlExerciseList);
-      // await db!.execute(sqlMuscleTrainingList);
-      // await db!.execute(sqlMuscleTrainingDetailsList);
-      // await db!.execute(sqlAerobicTrainingList);
-      // await db!.execute(sqlBikeTrainingList);
-      // await db!.execute(sqlStairsTrainingList);
     } on DatabaseException catch (e) {
       logger.e("createTables() error ${e.toString()}");
     }
@@ -359,9 +324,6 @@ class DatabaseProvider {
   }
 
   Future<void> openDB() async {
-    // db == null
-    //     ? logger.i("DP openDB() called. db : null, databasefile : $databasefile")
-    //     : logger.i("DP openDB() called. db : $db, databasefile : $databasefile");
     try {
       Directory? dbPath;
       if (Platform.isAndroid) {
@@ -371,8 +333,6 @@ class DatabaseProvider {
       }
 
       path = join(dbPath!.path, databasefile);
-
-      // logger.i("openDB()  dbPath : $dbPath --- dbPath.runtimeType : ${dbPath.runtimeType} --- databasefile : $databasefile");
 
       db = await openDatabase(
         path,
@@ -386,13 +346,6 @@ class DatabaseProvider {
       logger.e("DP openDB() error ${e.toString()}");
     }
   }
-
-  // Future<int> countAllTask() async {
-  //   final db = await instance.dataBase;
-  //   var result = await db.rawQuery('SELECT COUNT(*) FROM $myTable');
-  //   int count = Sqflite.firstIntValue(result);
-  //   return count;
-  // }
 }
 
 Future<void> testDataInserts(Database db) async {

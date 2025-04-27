@@ -71,7 +71,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(title: 'Flutter Demo', home: const MyHomePage(title: '書籍管理'));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -190,9 +189,7 @@ class _MyAppState extends State<MyApp> {
           ),
           onPressed: () async {
             logger.i('list books. number:$i --- genre ${BookGenre.values[i].name} --- ${BookGenre.values[i].runtimeType}');
-            // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
             // DONE: add isChecked to query (or select)
-            // List<Map<dynamic, dynamic>> result = await dp.query();
             logger.i("list by genre ${result.runtimeType} $result");
             if (context.mounted) ListRegisteredBooksByGenreRoute(genreID: BookGenre.values[i].index, isChecked: isChecked).push(context);
           },
@@ -274,12 +271,6 @@ class _InputBookFormState extends State<InputBookForm> {
             onSaved: (String? value) {
               book = book.copyWith(author: value!);
             },
-            // validator: (value) {
-            //   if (value == null || value.isEmpty) {
-            //     return '著者名を入力してください';
-            //   }
-            //   return null;
-            // },
           ),
           SizedBox(height: 10),
           Row(
@@ -322,9 +313,6 @@ class _InputBookFormState extends State<InputBookForm> {
                   widget._formKey.currentState!.save();
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
 
-                  // var p = book.publisher == "" ? Publisher.other.name : book.publisher;
-                  // var p = book.publisher == "" ? Publisher.other.name : book.publisher;
-                  // logger.i('InputBookForm class book ${book.name} ${book.author} $p');
                   logger.i('InputBookForm class book ${book.name} ${book.author} ${book.publisher} ${book.genre}');
                   var dp = DatabaseProvider(databasefile: databaseName);
                   dp.dataInsert(
