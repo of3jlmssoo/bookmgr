@@ -13,6 +13,12 @@ enum BookGenre {
   social("社会", Icons.description),
   philosophy("哲学思想", Icons.description),
   politics("政治", Icons.description),
+  literature("文学", Icons.description),
+  biz("ビジネス", Icons.description),
+  language("言語", Icons.description),
+  art("アート", Icons.description),
+  hobby("趣味", Icons.description),
+  science("科学", Icons.description),
   other("その他", Icons.description),
   all("全て", Icons.description);
 
