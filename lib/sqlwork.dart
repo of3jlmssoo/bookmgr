@@ -1,5 +1,6 @@
 import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/dbprovider.dart';
+import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -88,6 +89,12 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
           await dp.dropTable();
         },
         child: Text('drop table bookmgr_tbl'),
+      ),
+      TextButton(
+        onPressed: () async {
+          ListBookByGenreRoute(genre: '経済', isChecked: true).go(context);
+        },
+        child: Text('ListBookByGenreRoute'),
       ),
       ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
     ],

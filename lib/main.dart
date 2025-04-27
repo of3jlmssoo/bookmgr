@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 onPressed: () {
                   logger.i("購入済み書籍情報");
-                  ListPurchasedBookRoute(publisherID: Publisher.all.index, isChecked: true).push(context);
+                  ListPurchasedBookByPublisherRoute(publisherID: Publisher.all.index, isChecked: true).push(context);
                 },
                 child: Text("submit"),
               ),

@@ -260,9 +260,9 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
     logger.i("listBooks3() called --- genreID $genreID isChecked $isChecked");
     DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
     List lm = [];
-    // TODO: if genreID == 全て
+    // DONE: if genreID == 全て
     if (genreID == BookGenre.all.index) {
-      // TODO: call dp.
+      // DONE: call dp.
       lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '0');
     } else {
       lm =
@@ -468,18 +468,19 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
   }
 }
 
-class ListPurchasedBooksScreen extends StatefulWidget {
-  ListPurchasedBooksScreen({super.key, required this.pulisherID, required this.isChecked}) : dp = DatabaseProvider(databasefile: databaseName);
+class ListPurchasedBooksByPublisherScreen extends StatefulWidget {
+  ListPurchasedBooksByPublisherScreen({super.key, required this.pulisherID, required this.isChecked})
+    : dp = DatabaseProvider(databasefile: databaseName);
   final DatabaseProvider dp;
   final int pulisherID;
   final bool isChecked;
 
   @override
-  State<ListPurchasedBooksScreen> createState() => _ListPurchasedBooksScreenState();
+  State<ListPurchasedBooksByPublisherScreen> createState() => _ListPurchasedBooksByPublisherScreenState();
 }
 
-class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
-  _ListPurchasedBooksScreenState();
+class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooksByPublisherScreen> {
+  _ListPurchasedBooksByPublisherScreenState();
   Future<List<Widget>> getData() async {
     logger.i("_ListPurchasedBooksScreenState called.");
     await Future.delayed(const Duration(seconds: 1));
@@ -490,7 +491,27 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      // DONE: ジャンル検索対応
       title: Text('購入済み書籍一覧 ${Publisher.values[widget.pulisherID].name}'),
+      // actions: [IconButton(onPressed: () {
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (BuildContext context) {
+            return purchasedBooksByGenre();
+            // return [
+            //   PopupMenuItem(
+            //     value: 1,
+            //     child: Text('Item 1'),
+            //     onTap: () {
+            //       ListBookByGenreRoute(genre: '経済', isChecked: true).go(context);
+            //     },
+            //   ),
+            //   const PopupMenuItem(value: 2, child: Text('Item 2')),
+            //   const PopupMenuItem(value: 3, child: Text('Item 3')),
+            // ];
+          },
+        ),
+      ],
     ),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
@@ -511,6 +532,36 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
       },
     ),
   );
+
+  List<PopupMenuItem> purchasedBooksByGenre() {
+    logger.i("purchasedBooksByGenre() called.");
+    List<PopupMenuItem> result = [];
+    for (var g in BookGenre.values.getRange(0, BookGenre.values.length - 1)) {
+      result.add(
+        PopupMenuItem(
+          onTap: () async {
+            // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+            // logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
+            if (mounted) ListBookByGenreRoute(genre: g.name, isChecked: true).push(context);
+          },
+          child: Text(g.name),
+        ),
+      );
+    }
+    // result = [
+    //   PopupMenuItem(
+    //     onTap: () async {
+    //       // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+    //       // logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
+    //       if (mounted) ListBookByGenreRoute(genre: "経済", isChecked: true).push(context);
+    //     },
+    //     child: Text("abc"),
+    //   ),
+    // ];
+    logger.i("purchasedBooksByGenre() result $result");
+    // return [PopupMenuItem(onTap: () {}, child: Text('')), const PopupMenuItem(child: Text('another work'))];
+    return result;
+  }
 
   Future<List<Widget>> listBooks5({required int publisherID, required bool isChecked}) async {
     logger.i("listBooks5() called -- publisherID $publisherID --- isChecked $isChecked");
@@ -553,6 +604,125 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
           ),
         );
         logger.i("listBooks5() i=$i --- $lw");
+      }
+      return lw;
+    }
+  }
+}
+
+class ListBooksByGenreScreen extends StatefulWidget {
+  ListBooksByGenreScreen({super.key, required this.genre, required this.isChecked}) : dp = DatabaseProvider(databasefile: databaseName);
+  final DatabaseProvider dp;
+  final String genre;
+  final bool isChecked;
+
+  @override
+  State<ListBooksByGenreScreen> createState() => _ListBooksByGenreScreenState();
+}
+
+class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
+  _ListBooksByGenreScreenState();
+  Future<List<Widget>> getData() async {
+    logger.i("_ListBooksByGenreScreenState called.");
+    await Future.delayed(const Duration(seconds: 1));
+    return await listBooks6(genre: widget.genre, isChecked: widget.isChecked);
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //DONE: ジャンル検索対応
+      title: Text('購入済み書籍一覧 ${widget.genre}'),
+      // actions: [IconButton(onPressed: () {
+      // actions: [
+      //   PopupMenuButton(
+      //     itemBuilder: (BuildContext context) {
+      //       return purchasedBooksByGenre();
+      //     },
+      //   ),
+      // ],
+    ),
+    body: FutureBuilder<List<Widget>>(
+      future: getData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget>? categories = snapshot.data;
+          // logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          return ListView.builder(
+            itemCount: categories!.length,
+            itemBuilder: (context, index) {
+              return categories[index];
+            },
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+        }
+        return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+      },
+    ),
+  );
+
+  // List<PopupMenuEntry> purchasedBooksByGenre() {
+  //   logger.i("purchasedBooksByGenre() called.");
+  //   List<PopupMenuEntry> result = [];
+  //   for (var g in BookGenre.values.getRange(0, BookGenre.values.length - 1)) {
+  //     result.add(
+  //       PopupMenuItem(
+  //         onTap: () async {
+  //           DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+  //           logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
+  //         },
+  //         child: Text(g.name),
+  //       ),
+  //     );
+  //   }
+  //   // return [PopupMenuItem(onTap: () {}, child: Text('')), const PopupMenuItem(child: Text('another work'))];
+  //   return result;
+  // }
+
+  Future<List<Widget>> listBooks6({required String genre, required bool isChecked}) async {
+    logger.i("listBooks6() called -- genre $genre --- isChecked $isChecked");
+
+    if (true) {
+      logger.i("listBooks6() then");
+      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+
+      List lm = await dp.rawSelectWherePurchasedGenre(genre, '1');
+      logger.i("listBooks6() lm.length ${lm.length} lm $lm");
+      List<Widget> lw = List.empty(growable: true);
+      for (int i = 0; i < lm.length; i++) {
+        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+        // logger.i("listBooks3() i=$i --- $lw");
+        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+        lw.add(
+          ListTile(
+            title: Text(lm[i]['title']),
+            subtitle: Text(apg),
+            onTap: () async {
+              // DONE: display and change the entry
+              List list = await dp.selectByID(id: lm[i]["id"]);
+              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+
+              Book book = Book(
+                id: lm[i]["id"],
+                purchased: lm[i]["purchased"],
+                date: lm[i]["date"],
+                name: lm[i]["title"],
+                author: lm[i]["author"],
+                publisher: p,
+                genre: g,
+                comment: lm[i]["memo"],
+              );
+              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+              // if (mounted) ListBookByGenreRoute(genre: book.genre!.name, isChecked: true);
+              logger.i("ListTile changed?");
+            },
+          ),
+        );
+        logger.i("listBooks6() i=$i --- $lw");
       }
       return lw;
     }

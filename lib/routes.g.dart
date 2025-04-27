@@ -13,7 +13,8 @@ List<RouteBase> get $appRoutes => [
   $listRegisteredBooksByGenreRoute,
   $listRegisteredBooksByPublisherRoute,
   $listAndChangeRegisteredBookRoute,
-  $listPurchasedBookRoute,
+  $listPurchasedBookByPublisherRoute,
+  $listBookByGenreRoute,
 ];
 
 RouteBase get $listGenre => GoRouteData.$route(
@@ -180,15 +181,16 @@ extension $ListAndChangeRegisteredBookRouteExtension
       context.replace(location, extra: $extra);
 }
 
-RouteBase get $listPurchasedBookRoute => GoRouteData.$route(
+RouteBase get $listPurchasedBookByPublisherRoute => GoRouteData.$route(
   path: '/listpurchaseddbook',
 
-  factory: $ListPurchasedBookRouteExtension._fromState,
+  factory: $ListPurchasedBookByPublisherRouteExtension._fromState,
 );
 
-extension $ListPurchasedBookRouteExtension on ListPurchasedBookRoute {
-  static ListPurchasedBookRoute _fromState(GoRouterState state) =>
-      ListPurchasedBookRoute(
+extension $ListPurchasedBookByPublisherRouteExtension
+    on ListPurchasedBookByPublisherRoute {
+  static ListPurchasedBookByPublisherRoute _fromState(GoRouterState state) =>
+      ListPurchasedBookByPublisherRoute(
         publisherID: int.parse(state.uri.queryParameters['publisher-i-d']!)!,
         isChecked: _$boolConverter(state.uri.queryParameters['is-checked']!)!,
       );
@@ -199,6 +201,34 @@ extension $ListPurchasedBookRouteExtension on ListPurchasedBookRoute {
       'publisher-i-d': publisherID.toString(),
       'is-checked': isChecked.toString(),
     },
+  );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $listBookByGenreRoute => GoRouteData.$route(
+  path: '/listbooksbygenre',
+
+  factory: $ListBookByGenreRouteExtension._fromState,
+);
+
+extension $ListBookByGenreRouteExtension on ListBookByGenreRoute {
+  static ListBookByGenreRoute _fromState(GoRouterState state) =>
+      ListBookByGenreRoute(
+        genre: state.uri.queryParameters['genre']!,
+        isChecked: _$boolConverter(state.uri.queryParameters['is-checked']!)!,
+      );
+
+  String get location => GoRouteData.$location(
+    '/listbooksbygenre',
+    queryParams: {'genre': genre, 'is-checked': isChecked.toString()},
   );
 
   void go(BuildContext context) => context.go(location);
