@@ -43,7 +43,6 @@ class ListRegisteredBooksByGenreRoute extends GoRouteData {
   const ListRegisteredBooksByGenreRoute({required this.genreID, required this.isChecked});
   final int genreID;
   final bool isChecked;
-  // final List<Map<dynamic, dynamic>> list;
   @override
   Widget build(BuildContext context, GoRouterState state) => ListRegisteredBooksByGenreScreen(genreID: genreID, isChecked: isChecked);
 }
