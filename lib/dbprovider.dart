@@ -17,6 +17,12 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
+  Future<List> dumpTable() async {
+    if (db == null) await openDB();
+    logger.i('dumpTable() called');
+    return await db!.query("bookmgr_tbl");
+  }
+
   Future<List> selectByID({required int id}) async {
     if (db == null) await openDB();
 

@@ -3,10 +3,12 @@ import 'package:bookmgr/dbprovider.dart';
 import 'package:bookmgr/maintheme.dart';
 import 'package:bookmgr/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'dart:collection';
 // import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -358,7 +360,24 @@ class MainPopouMenu extends StatelessWidget {
             },
             child: Text('SQLite work'),
           ),
-          const PopupMenuItem(child: Text('another work')),
+          PopupMenuItem(
+            onTap: () async {
+              logger.i("dump db");
+              var dp = DatabaseProvider(databasefile: databaseName);
+              var list = await dp.dumpTable();
+              String result = "";
+              for (var l in list) {
+                // logger.i("--> ${l.toString().runtimeType}");
+                // result = result + l.toString();
+                result = "$result  ${l.toString()}, \n";
+              }
+              // logger.i("${await dp.dumpTable()}");
+              // logger.i("${listToString(await dp.dumpTable())}");
+              logger.i("dump db result $result");
+              Clipboard.setData(ClipboardData(text: result));
+            },
+            child: Text('dump db'),
+          ),
         ];
       },
     );
