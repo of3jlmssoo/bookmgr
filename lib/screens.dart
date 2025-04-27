@@ -264,7 +264,7 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Widget>? categories = snapshot.data;
-          logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          // logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
           return ListView.builder(
             itemCount: categories!.length,
             itemBuilder: (context, index) {
@@ -280,59 +280,61 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
   );
 
   Future<List<Widget>> listBooks3({required int genreID, required bool isChecked}) async {
-    logger.i("listBooks3() called");
-
+    logger.i("listBooks3() called --- genreID $genreID isChecked $isChecked");
+    DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+    List lm = [];
     // TODO: if genreID == 全て
     if (genreID == BookGenre.all.index) {
       // TODO: call dp.
+      lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '0');
     } else {
-      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
       // List<Map> lm = await dp.query();
       // List lm = await dp.selectByGenre(genre: BookGenre.values[genreID]);
       // lm = await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
-      List lm =
+      lm =
           isChecked == true
               ? await dp.selectByGenre(genre: BookGenre.values[genreID])
               : await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
       logger.i("listBooks3() lm.length ${lm.length} lm $lm");
-      List<Widget> lw = List.empty(growable: true);
-      for (int i = 0; i < lm.length; i++) {
-        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-        // logger.i("listBooks3() i=$i --- $lw");
-        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-        lw.add(
-          ListTile(
-            title: Text(lm[i]['title']),
-            subtitle: Text(apg),
-            onTap: () async {
-              // DONE: display and change the entry
-              List list = await dp.selectByID(id: lm[i]["id"]);
-              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
-
-              Book book = Book(
-                id: lm[i]["id"],
-                purchased: lm[i]["purchased"],
-                date: lm[i]["date"],
-                name: lm[i]["title"],
-                author: lm[i]["author"],
-                publisher: p,
-                genre: g,
-                comment: lm[i]["memo"],
-              );
-              // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
-              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-              logger.i("ListTile changed?");
-            },
-          ),
-        );
-        logger.i("listBooks3() i=$i --- $lw");
-      }
-
-      return lw;
     }
-    return [ListTile(title: Text("Sorry"), subtitle: Text("unable provide"))];
+    List<Widget> lw = List.empty(growable: true);
+    for (int i = 0; i < lm.length; i++) {
+      // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+      // logger.i("listBooks3() i=$i --- $lw");
+      var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+      lw.add(
+        ListTile(
+          title: Text(lm[i]['title']),
+          subtitle: Text(apg),
+          onTap: () async {
+            // DONE: display and change the entry
+            List list = await dp.selectByID(id: lm[i]["id"]);
+            logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+            var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+            var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+
+            Book book = Book(
+              id: lm[i]["id"],
+              purchased: lm[i]["purchased"],
+              date: lm[i]["date"],
+              name: lm[i]["title"],
+              author: lm[i]["author"],
+              publisher: p,
+              genre: g,
+              comment: lm[i]["memo"],
+            );
+            // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
+            if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+            logger.i("ListTile changed?");
+          },
+        ),
+      );
+      // logger.i("listBooks3() i=$i --- $lw");
+    }
+
+    return lw;
+    // }
+    // return [ListTile(title: Text("Sorry"), subtitle: Text("unable provide"))];
   }
 
   List<Widget> listBooks() {
@@ -434,7 +436,7 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Widget>? categories = snapshot.data;
-          logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          // logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
           return ListView.builder(
             itemCount: categories!.length,
             itemBuilder: (context, index) {
@@ -532,7 +534,7 @@ class _ListPurchasedBooksScreenState extends State<ListPurchasedBooksScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Widget>? categories = snapshot.data;
-          logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          // logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
           return ListView.builder(
             itemCount: categories!.length,
             itemBuilder: (context, index) {

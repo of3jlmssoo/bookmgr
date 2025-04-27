@@ -62,8 +62,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-// TODO: 全て対応 by genre
-// TODO: 全て対応 by publisher
+// DONE: 全て対応 by genre
+// DONE: 全て対応 by publisher
 class _MyAppState extends State<MyApp> {
   final _formKey = GlobalKey<FormState>();
 
@@ -108,8 +108,8 @@ class _MyAppState extends State<MyApp> {
               SizedBox(height: 30),
               Text("購入済み書籍情報", style: Theme.of(context).textTheme.displayMedium),
               SizedBox(height: 16),
-              // TODO: add function to list purchased books
-              // TODO: add filter, by publisher, by genre
+              // DONE: add function to list purchased books
+              // DONE: add filter, by publisher, by genre
               ElevatedButton(
                 onPressed: () {
                   logger.i("購入済み書籍情報");

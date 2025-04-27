@@ -174,6 +174,7 @@ class DatabaseProvider {
     List<Map> list = [];
     try {
       list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      logger.i("userquery() length ${list.length}");
       // for (var l in list) {
       //   logger.i("DP query() $l");
       // }
@@ -182,6 +183,7 @@ class DatabaseProvider {
     } on DatabaseException catch (e) {
       logger.e("DP query() error ${e.toString()}");
     }
+    logger.i("userquery() length ${list.length}");
     return list;
   }
 

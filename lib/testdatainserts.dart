@@ -109,7 +109,7 @@ Future<void> testdatainserts(Transaction txn) async {
     'title': 'タイトル6',
     'author': '著者6',
     'publisher': '岩波現代文庫',
-    'genre': '全て',
+    'genre': 'その他',
     'memo': 'コメント6',
   });
 
@@ -334,7 +334,7 @@ Future<void> testdatainserts(Transaction txn) async {
     'date': '2025-04-14',
     'title': 'タイトル4',
     'author': '著者4',
-    'publisher': '全て',
+    'publisher': 'その他',
     'genre': 'その他',
     'memo': 'コメント4',
   });
