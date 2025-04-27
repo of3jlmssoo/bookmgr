@@ -17,12 +17,14 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
+  // TODO: try and timeout
   Future<List> dumpTable() async {
     if (db == null) await openDB();
     logger.i('dumpTable() called');
     return await db!.query("bookmgr_tbl");
   }
 
+  // TODO: try and timeout
   Future<List> selectByID({required int id}) async {
     if (db == null) await openDB();
 
@@ -52,6 +54,7 @@ class DatabaseProvider {
     } else {
       inArgs = [purchased] + [genre];
     }
+    // TODO: try and timeout
     var result = await db!.query(
       'bookmgr_tbl',
       where: 'purchased = ? AND genre IN (${List.filled(inArgs.length - 1, '?').join(',')})',

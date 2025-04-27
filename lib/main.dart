@@ -25,6 +25,10 @@ part 'main.g.dart';
 // var logger = Logger(printer: PrettyPrinter());
 // DONE: need to time out
 // DONE: add try to SQL statetments
+// TODO: change mysample to 書籍管理
+// TODO: make guide (README)
+// TODO: make guide (how to use)
+// TODO: date is registered date and make purchased date
 
 @riverpod
 String example(Ref ref) {
@@ -361,6 +365,7 @@ class MainPopouMenu extends StatelessWidget {
             child: Text('SQLite work'),
           ),
           PopupMenuItem(
+            // TODO: copied to clipboard
             onTap: () async {
               logger.i("dump db");
               var dp = DatabaseProvider(databasefile: databaseName);

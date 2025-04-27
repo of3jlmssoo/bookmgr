@@ -681,15 +681,18 @@ class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
   //   return result;
   // }
 
+  // TODO: rename the function
   Future<List<Widget>> listBooks6({required String genre, required bool isChecked}) async {
     logger.i("listBooks6() called -- genre $genre --- isChecked $isChecked");
 
+    // TODO: delete if true
     if (true) {
       logger.i("listBooks6() then");
       DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
 
       List lm = await dp.rawSelectWherePurchasedGenre(genre, '1');
       logger.i("listBooks6() lm.length ${lm.length} lm $lm");
+      // TODO: try to commonalize
       List<Widget> lw = List.empty(growable: true);
       for (int i = 0; i < lm.length; i++) {
         // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
