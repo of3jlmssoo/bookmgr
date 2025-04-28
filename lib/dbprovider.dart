@@ -17,19 +17,47 @@ class DatabaseProvider {
   Database? db;
   late String path;
 
-  // TODO: try and timeout
+  // DONE: try and timeout
   Future<List> dumpTable() async {
     if (db == null) await openDB();
     logger.i('dumpTable() called');
-    return await db!.query("bookmgr_tbl");
+
+    List<Map> list = [];
+
+    try {
+      list = await db!
+          .query("bookmgr_tbl")
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+    } on DatabaseException catch (e) {
+      logger.e("dumpTable error ${e.toString()}");
+    }
+    return list;
   }
 
-  // TODO: try and timeout
+  // DONE: try and timeout
   Future<List> selectByID({required int id}) async {
     if (db == null) await openDB();
 
-    List list;
-    list = await db!.rawQuery('SELECT * FROM bookmgr_tbl WHERE id = ?', [id]);
+    List<Map> list = [];
+    try {
+      list = await db!
+          .rawQuery('SELECT * FROM bookmgr_tbl WHERE id = ?', [id])
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+    } on DatabaseException catch (e) {
+      logger.e("selectByID error ${e.toString()}");
+    }
     return list;
   }
 
@@ -54,12 +82,21 @@ class DatabaseProvider {
     } else {
       inArgs = [purchased] + [genre];
     }
-    // TODO: try and timeout
-    var result = await db!.query(
-      'bookmgr_tbl',
-      where: 'purchased = ? AND genre IN (${List.filled(inArgs.length - 1, '?').join(',')})',
-      whereArgs: inArgs,
-    );
+    // DONE: try and timeout
+    var result = <Map<dynamic, dynamic>>[];
+    try {
+      result = await db!
+          .query('bookmgr_tbl', where: 'purchased = ? AND genre IN (${List.filled(inArgs.length - 1, '?').join(',')})', whereArgs: inArgs)
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+    } on DatabaseException catch (e) {
+      logger.e("rawSelectWherePurchasedGenre error ${e.toString()}");
+    }
     logger.i("rawSelectWherePurchasedGenre ->  ${result.length} $result");
     return result;
   }
