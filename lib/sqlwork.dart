@@ -92,11 +92,11 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
       ),
       TextButton(
         onPressed: () async {
-          ListBookByGenreRoute(genre: '経済', isChecked: true).go(context);
+          ListBookByGenreRoute(genre: '経済', isChecked: true).push(context);
         },
         child: Text('ListBookByGenreRoute'),
       ),
-      ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
+      ElevatedButton(onPressed: () => context.push('/'), child: const Text('Go back to the Home screen')),
     ],
   ),
 );

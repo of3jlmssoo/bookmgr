@@ -196,6 +196,7 @@ class DatabaseProvider {
     String? publisher,
     String? genre,
     String comment = "",
+    String purchasedDate = "",
   }) async {
     if (db == null) await openDB();
     try {
@@ -216,16 +217,10 @@ class DatabaseProvider {
       //memo Text,
       //PRIMARY KEY(id  AUTOINCREMENT))',
 
-      int count = await db!.rawUpdate('UPDATE bookmgr_tbl SET purchased=?, date=?, title=?, author=?, publisher=?, genre=?, memo=? WHERE id=?', [
-        purchased,
-        inputDate,
-        title,
-        author,
-        publisher,
-        genre,
-        comment,
-        id,
-      ]);
+      int count = await db!.rawUpdate(
+        'UPDATE bookmgr_tbl SET purchased=?, date=?, title=?, author=?, publisher=?, genre=?, memo=?, purchasedDate=? WHERE id=?',
+        [purchased, inputDate, title, author, publisher, genre, comment, purchasedDate, id],
+      );
 
       logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
     } on DatabaseException catch (e) {
@@ -324,7 +319,7 @@ class DatabaseProvider {
     if (db == null) await openDB();
     try {
       await db!.execute(
-        'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,PRIMARY KEY(id  AUTOINCREMENT))',
+        'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text, purchasedDate Text,PRIMARY KEY(id  AUTOINCREMENT))',
       );
     } on DatabaseException catch (e) {
       logger.e("createTables() error ${e.toString()}");

@@ -15,6 +15,7 @@ _Book _$BookFromJson(Map<String, dynamic> json) => _Book(
   publisher: $enumDecodeNullable(_$PublisherEnumMap, json['publisher']),
   genre: $enumDecodeNullable(_$BookGenreEnumMap, json['genre']),
   comment: json['comment'] as String?,
+  purchasedDate: json['purchasedDate'] as String?,
 );
 
 Map<String, dynamic> _$BookToJson(_Book instance) => <String, dynamic>{
@@ -26,6 +27,7 @@ Map<String, dynamic> _$BookToJson(_Book instance) => <String, dynamic>{
   'publisher': _$PublisherEnumMap[instance.publisher],
   'genre': _$BookGenreEnumMap[instance.genre],
   'comment': instance.comment,
+  'purchasedDate': instance.purchasedDate,
 };
 
 const _$PublisherEnumMap = {

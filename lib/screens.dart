@@ -7,6 +7,7 @@ import 'package:bookmgr/routes.dart';
 import 'package:bookmgr/sqlwork.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import 'loggerdef.dart';
 
@@ -147,6 +148,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                   setState(() {
                     isChecked = value;
                     b = b.copyWith(purchased: value == true ? 1 : 0);
+                    if (value == true) b = b.copyWith(purchasedDate: DateFormat('yyyy-MM-dd').format(DateTime.now()));
                   });
                 },
               ),
@@ -175,6 +177,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                         publisher: b.publisher?.name ?? "",
                         genre: b.genre?.name ?? "",
                         comment: b.comment ?? "",
+                        purchasedDate: b.purchasedDate ?? "",
                       );
                       nameController.clear();
                       authorController.clear();
@@ -271,39 +274,8 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
               : await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
       logger.i("listBooks3() lm.length ${lm.length} lm $lm");
     }
-    List<Widget> lw = List.empty(growable: true);
-    for (int i = 0; i < lm.length; i++) {
-      // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-      // logger.i("listBooks3() i=$i --- $lw");
-      var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-      lw.add(
-        ListTile(
-          title: Text(lm[i]['title']),
-          subtitle: Text(apg),
-          onTap: () async {
-            // DONE: display and change the entry
-            List list = await dp.selectByID(id: lm[i]["id"]);
-            logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-            var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-            var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
-
-            Book book = Book(
-              id: lm[i]["id"],
-              purchased: lm[i]["purchased"],
-              date: lm[i]["date"],
-              name: lm[i]["title"],
-              author: lm[i]["author"],
-              publisher: p,
-              genre: g,
-              comment: lm[i]["memo"],
-            );
-            if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-            logger.i("ListTile changed?");
-          },
-        ),
-      );
-      // logger.i("listBooks3() i=$i --- $lw");
-    }
+    List<Widget> lw = [];
+    if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
 
     return lw;
   }
@@ -430,39 +402,41 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
               ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
               : await dp.rawSelectWherePublisherPurchased(Publisher.values[publisherID].name, '0');
       logger.i("listBooks4() lm.length ${lm.length} lm $lm");
-      List<Widget> lw = List.empty(growable: true);
-      for (int i = 0; i < lm.length; i++) {
-        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-        // logger.i("listBooks3() i=$i --- $lw");
-        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-        lw.add(
-          ListTile(
-            title: Text(lm[i]['title']),
-            subtitle: Text(apg),
-            onTap: () async {
-              // DONE: display and change the entry
-              List list = await dp.selectByID(id: lm[i]["id"]);
-              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+      // List<Widget> lw = List.empty(growable: true);
+      // for (int i = 0; i < lm.length; i++) {
+      //   // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+      //   // logger.i("listBooks3() i=$i --- $lw");
+      //   var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+      //   lw.add(
+      //     ListTile(
+      //       title: Text(lm[i]['title']),
+      //       subtitle: Text(apg),
+      //       onTap: () async {
+      //         // DONE: display and change the entry
+      //         List list = await dp.selectByID(id: lm[i]["id"]);
+      //         logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+      //         var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+      //         var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
 
-              Book book = Book(
-                id: lm[i]["id"],
-                purchased: lm[i]["purchased"],
-                date: lm[i]["date"],
-                name: lm[i]["title"],
-                author: lm[i]["author"],
-                publisher: p,
-                genre: g,
-                comment: lm[i]["memo"],
-              );
-              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-              logger.i("ListTile changed?");
-            },
-          ),
-        );
-        logger.i("listBooks4() i=$i --- $lw");
-      }
+      //         Book book = Book(
+      //           id: lm[i]["id"],
+      //           purchased: lm[i]["purchased"],
+      //           date: lm[i]["date"],
+      //           name: lm[i]["title"],
+      //           author: lm[i]["author"],
+      //           publisher: p,
+      //           genre: g,
+      //           comment: lm[i]["memo"],
+      //         );
+      //         if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+      //         logger.i("ListTile changed?");
+      //       },
+      //     ),
+      //   );
+      //   logger.i("listBooks4() i=$i --- $lw");
+      // }
+      List<Widget> lw = [];
+      if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
       return lw;
     }
   }
@@ -572,39 +546,41 @@ class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooks
 
       List lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '1');
       logger.i("listBooks5() lm.length ${lm.length} lm $lm");
-      List<Widget> lw = List.empty(growable: true);
-      for (int i = 0; i < lm.length; i++) {
-        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-        // logger.i("listBooks3() i=$i --- $lw");
-        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-        lw.add(
-          ListTile(
-            title: Text(lm[i]['title']),
-            subtitle: Text(apg),
-            onTap: () async {
-              // DONE: display and change the entry
-              List list = await dp.selectByID(id: lm[i]["id"]);
-              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+      // List<Widget> lw = List.empty(growable: true);
+      // for (int i = 0; i < lm.length; i++) {
+      //   // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+      //   // logger.i("listBooks3() i=$i --- $lw");
+      //   var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+      //   lw.add(
+      //     ListTile(
+      //       title: Text(lm[i]['title']),
+      //       subtitle: Text(apg),
+      //       onTap: () async {
+      //         // DONE: display and change the entry
+      //         List list = await dp.selectByID(id: lm[i]["id"]);
+      //         logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+      //         var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+      //         var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
 
-              Book book = Book(
-                id: lm[i]["id"],
-                purchased: lm[i]["purchased"],
-                date: lm[i]["date"],
-                name: lm[i]["title"],
-                author: lm[i]["author"],
-                publisher: p,
-                genre: g,
-                comment: lm[i]["memo"],
-              );
-              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-              logger.i("ListTile changed?");
-            },
-          ),
-        );
-        logger.i("listBooks5() i=$i --- $lw");
-      }
+      //         Book book = Book(
+      //           id: lm[i]["id"],
+      //           purchased: lm[i]["purchased"],
+      //           date: lm[i]["date"],
+      //           name: lm[i]["title"],
+      //           author: lm[i]["author"],
+      //           publisher: p,
+      //           genre: g,
+      //           comment: lm[i]["memo"],
+      //         );
+      //         if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+      //         logger.i("ListTile changed?");
+      //       },
+      //     ),
+      //   );
+      //   logger.i("listBooks5() i=$i --- $lw");
+      // }
+      List<Widget> lw = [];
+      if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
       return lw;
     }
   }
@@ -730,4 +706,42 @@ class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
       return lw;
     }
   }
+}
+
+// TODO: change title and subtitle
+List<Widget> makeListOfListTileWidget(BuildContext context, List<dynamic> lm, DatabaseProvider dp) {
+  List<Widget> lw = List.empty(growable: true);
+  for (int i = 0; i < lm.length; i++) {
+    // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
+    // logger.i("listBooks3() i=$i --- $lw");
+    var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+    lw.add(
+      ListTile(
+        title: Text(lm[i]['title']),
+        subtitle: Text(apg),
+        onTap: () async {
+          // DONE: display and change the entry
+          List list = await dp.selectByID(id: lm[i]["id"]);
+          logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
+          var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
+          var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
+
+          Book book = Book(
+            id: lm[i]["id"],
+            purchased: lm[i]["purchased"],
+            date: lm[i]["date"],
+            name: lm[i]["title"],
+            author: lm[i]["author"],
+            publisher: p,
+            genre: g,
+            comment: lm[i]["memo"],
+          );
+          if (context.mounted) ListAndChangeRegisteredBookRoute(book).go(context);
+          logger.i("ListTile changed?");
+        },
+      ),
+    );
+    // logger.i("listBooks3() i=$i --- $lw");
+  }
+  return lw;
 }

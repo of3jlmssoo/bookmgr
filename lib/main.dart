@@ -8,7 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'dart:collection';
+// import 'dart:collection';
 // import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -29,6 +29,7 @@ part 'main.g.dart';
 // TODO: make guide (README)
 // TODO: make guide (how to use)
 // TODO: date is registered date and make purchased date
+// TODO: update comment field
 
 @riverpod
 String example(Ref ref) {
@@ -248,6 +249,7 @@ class _InputBookFormState extends State<InputBookForm> {
   final TextEditingController authorController = TextEditingController();
   final TextEditingController publisherController = TextEditingController();
   final TextEditingController genreController = TextEditingController();
+  final TextEditingController commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +309,14 @@ class _InputBookFormState extends State<InputBookForm> {
               ),
             ],
           ),
-
+          TextFormField(
+            // The validator receives the text that the user has entered.
+            controller: commentController,
+            decoration: const InputDecoration(labelText: "コメント"),
+            onSaved: (String? value) {
+              book = book.copyWith(comment: value!);
+            },
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
@@ -328,16 +337,19 @@ class _InputBookFormState extends State<InputBookForm> {
                     author: book.author ?? "",
                     publisher: book.publisher ?? Publisher.other,
                     genre: book.genre ?? BookGenre.other,
+                    comment: book.comment ?? "",
                   );
 
                   nameController.clear();
                   authorController.clear();
                   publisherController.clear();
                   genreController.clear();
+                  commentController.clear();
                   book = book.copyWith(name: "");
                   book = book.copyWith(author: "");
                   book = book.copyWith(publisher: Publisher.other);
                   book = book.copyWith(genre: BookGenre.other);
+                  book = book.copyWith(comment: "");
                 }
               },
               child: const Text('Submit'),
@@ -365,7 +377,7 @@ class MainPopouMenu extends StatelessWidget {
             child: Text('SQLite work'),
           ),
           PopupMenuItem(
-            // TODO: copied to clipboard
+            // DONE: copied to clipboard message  (snapbar)
             onTap: () async {
               logger.i("dump db");
               var dp = DatabaseProvider(databasefile: databaseName);
@@ -378,8 +390,11 @@ class MainPopouMenu extends StatelessWidget {
               }
               // logger.i("${await dp.dumpTable()}");
               // logger.i("${listToString(await dp.dumpTable())}");
-              logger.i("dump db result $result");
               Clipboard.setData(ClipboardData(text: result));
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text("クリップボードにコピーしました"), showCloseIcon: true, duration: Duration(seconds: 3)));
+              logger.i("dump db result $result");
             },
             child: Text('dump db'),
           ),
