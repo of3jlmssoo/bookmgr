@@ -48,7 +48,8 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('List and Change the book')),
+    // appBar: AppBar(title: const Text('List and Change the book')),
+    appBar: AppBar(title: const Text('書籍情報')),
     body: SizedBox(width: double.infinity, child: SingleChildScrollView(child: listchangeBook(context))),
   );
 
@@ -200,13 +201,13 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              logger.i("List and Change widget.book ${widget.book}");
-              logger.i("List and Change b $b");
-            },
-            child: const Text('Check book'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     logger.i("List and Change widget.book ${widget.book}");
+          //     logger.i("List and Change b $b");
+          //   },
+          //   child: const Text('Check book'),
+          // ),
           ElevatedButton(onPressed: () => context.go('/'), child: const Text('Go back to the Home screen')),
         ],
       ),
@@ -391,7 +392,7 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
     ),
   );
 
-  // TODO: list all books by pushing all of publishers
+  // DONE: list all books by pushing all of publishers
   Future<List<Widget>> listPublisherPurchased({required int publisherID, required bool isChecked}) async {
     logger.i("listPublisherPurchased() called -- publisherID $publisherID --- isChecked $isChecked");
 

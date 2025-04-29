@@ -1,16 +1,41 @@
-# mysample
 
-A new Flutter project.
+# 書籍管理アプリ
+気になった本を記録する。
+購入したら購入済みに分類する。
 
-## Getting Started
+# 機能
+## 初期画面
+### 登録済み書籍確認
+1. 経済等のジャンル毎に登録済みの書籍の一覧を表示する
+2. 出版社毎に登録済みの書籍の一覧を表示する
 
-This project is a starting point for a Flutter application.
+- ジャンル、出版社共「その他」あり
+- ジャンル、出版社共全ての書籍を表示する「全て」あり。
+- 「購入済みを含め」のチェックボックスをチェックすると購入済みの書籍も含めて表示される
 
-A few resources to get you started if this is your first Flutter project:
+ジャンル、出版社は固定で、追加はできません。「その他」を選択の上コメント欄に記載してください。
+#### 登録済み書籍一覧 XX(XXはジャンル名、その他、全てのいずれか)
+各書籍の情報は以下の通り。
+- 1行目　タイトル、出版社、購入済み(購入済みの場合)
+- 2行目　ID、著者名(登録ありの場合)、ジャンル、コメント(登録ありの場合)
+IDは初期登録時に自動で採番される番号です。この番号で管理されています。
+エントリーをクリックすると「書籍情報」画面に移ります。
+#### 書籍情報
+以下の「書籍情報入力」を参照。
+- Submitボタンで書籍情報が更新される
+- Deleteボタンで書籍情報が削除される
+- Go back to the Home screenボタンで初期画面に戻ります
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 購入済み書籍情報
+購入済みに分類された書籍の一覧を表示する。
+右上のアイコン(︙)をクリックするとジャンル毎に購入済み書籍をリストできます。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 書籍情報入力
+登録したい書籍に関し書籍名、著者名、出版社、ジャンル、コメントを登録します。
+- 入力必須は書籍名のみです
+- 出版社を選ばない場合「その他」が使われます
+- ジャンルを選ばない場合「その他」が使われます
+
+忙しい際には「書籍名」欄にタイトル、著者名、出版社名などを登録し、後から適切に更新することができます。
+### 初期画面右上アイコン
+右上のアイコン(︙)をクリックすると「dump db」メニューがあります。これをクリックすると購入済みを含めた登録済み書籍情報がテキストでクリップボードにコピーされます。

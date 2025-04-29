@@ -30,6 +30,7 @@ part 'main.g.dart';
 // TODO: make guide (how to use)
 // DONE: date is registered date and make purchased date
 // DONE: update comment field
+// TODO: check if DB and table exist, if not create them in main()
 
 @riverpod
 String example(Ref ref) {
