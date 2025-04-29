@@ -30,18 +30,25 @@ part 'main.g.dart';
 // TODO: make guide (how to use)
 // DONE: date is registered date and make purchased date
 // DONE: update comment field
-// TODO: check if DB and table exist, if not create them in main()
+// DONE: check if DB and table exist, if not create them in main()
 
 @riverpod
 String example(Ref ref) {
   return 'foo';
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   databaseFactoryOrNull = null;
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
+
+  var dp = DatabaseProvider(databasefile: databaseName);
+  await dp.openDB();
+  List tables = await dp.listTables();
+  if (!tables.contains("bookmgr_tbl")) {
+    dp.createTables();
+  }
 
   runApp(ProviderScope(child: App()));
 }

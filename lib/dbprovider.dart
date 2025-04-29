@@ -379,6 +379,7 @@ class DatabaseProvider {
     } on DatabaseException catch (e) {
       logger.e("DP listTables() error ${e.toString()}");
     }
+    logger.i("listTables() ${tableNames.contains("bookmgr_tbl")}");
     return tableNames;
   }
 
