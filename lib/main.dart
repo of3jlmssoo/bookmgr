@@ -28,8 +28,8 @@ part 'main.g.dart';
 // TODO: change mysample to 書籍管理
 // TODO: make guide (README)
 // TODO: make guide (how to use)
-// TODO: date is registered date and make purchased date
-// TODO: update comment field
+// DONE: date is registered date and make purchased date
+// DONE: update comment field
 
 @riverpod
 String example(Ref ref) {

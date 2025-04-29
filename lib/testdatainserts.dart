@@ -163,7 +163,7 @@ Future<void> testdatainserts(Transaction txn) async {
     'date': '2025-04-14',
     'title': 'タイトル12',
     'author': '著者12',
-    'publisher': '朝日新著',
+    'publisher': '朝日新書',
     'genre': '経済',
     'memo': 'コメント12',
   });

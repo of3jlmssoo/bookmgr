@@ -38,7 +38,7 @@ enum Publisher {
   chikumag("ちくま学芸文庫", Icons.book),
   hayakawab("早川文庫", Icons.book),
   php("PHP新書", Icons.book),
-  asahi("朝日新著", Icons.book),
+  asahi("朝日新書", Icons.book),
   chuukou("中公新書", Icons.book),
   koudangakubunn("講談社学術文庫", Icons.book),
   koudangshinsho("講談社現代新書", Icons.book),

@@ -233,7 +233,7 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
   _ListRegisteredBooksByGenreScreenState();
   Future<List<Widget>> getData() async {
     await Future.delayed(const Duration(seconds: 1));
-    return await listBooks3(genreID: widget.genreID, isChecked: widget.isChecked);
+    return await listGenrePurchased(genreID: widget.genreID, isChecked: widget.isChecked);
   }
 
   @override
@@ -259,8 +259,8 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
     ),
   );
 
-  Future<List<Widget>> listBooks3({required int genreID, required bool isChecked}) async {
-    logger.i("listBooks3() called --- genreID $genreID isChecked $isChecked");
+  Future<List<Widget>> listGenrePurchased({required int genreID, required bool isChecked}) async {
+    logger.i("listGenrePurchased() called --- genreID $genreID isChecked $isChecked");
     DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
     List lm = [];
     // DONE: if genreID == 全て
@@ -272,7 +272,7 @@ class _ListRegisteredBooksByGenreScreenState extends State<ListRegisteredBooksBy
           isChecked == true
               ? await dp.selectByGenre(genre: BookGenre.values[genreID])
               : await dp.rawSelectWhereGenrePurchased(BookGenre.values[genreID].name, '0');
-      logger.i("listBooks3() lm.length ${lm.length} lm $lm");
+      logger.i("listGenrePurchased() lm.length ${lm.length} lm $lm");
     }
     List<Widget> lw = [];
     if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
@@ -362,7 +362,7 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
   _ListRegisteredBooksByPublisherScreenState();
   Future<List<Widget>> getData() async {
     await Future.delayed(const Duration(seconds: 1));
-    return await listBooks4(publisherID: widget.pulisherID, isChecked: widget.isChecked);
+    return await listPublisherPurchased(publisherID: widget.pulisherID, isChecked: widget.isChecked);
   }
 
   @override
@@ -391,54 +391,28 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
     ),
   );
 
-  Future<List<Widget>> listBooks4({required int publisherID, required bool isChecked}) async {
-    logger.i("listBooks4() called -- publisherID $publisherID --- isChecked $isChecked");
+  Future<List<Widget>> listPublisherPurchased({required int publisherID, required bool isChecked}) async {
+    logger.i("listPublisherPurchased() called -- publisherID $publisherID --- isChecked $isChecked");
 
-    if (true) {
-      logger.i("listBooks4() then");
-      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-      List lm =
+    logger.i("listPublisherPurchased() publisherID $publisherID isChecked $isChecked");
+    DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+    List lm = [];
+    if (publisherID == Publisher.all.index) {
+      lm = [
+        {"title": "sorry", "publisher": "constructing", "purchased": 0},
+      ];
+    } else {
+      lm =
           isChecked == true
               ? await dp.selectByPublisher(publisher: Publisher.values[publisherID])
               : await dp.rawSelectWherePublisherPurchased(Publisher.values[publisherID].name, '0');
-      logger.i("listBooks4() lm.length ${lm.length} lm $lm");
-      // List<Widget> lw = List.empty(growable: true);
-      // for (int i = 0; i < lm.length; i++) {
-      //   // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-      //   // logger.i("listBooks3() i=$i --- $lw");
-      //   var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-      //   lw.add(
-      //     ListTile(
-      //       title: Text(lm[i]['title']),
-      //       subtitle: Text(apg),
-      //       onTap: () async {
-      //         // DONE: display and change the entry
-      //         List list = await dp.selectByID(id: lm[i]["id"]);
-      //         logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-      //         var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-      //         var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
-
-      //         Book book = Book(
-      //           id: lm[i]["id"],
-      //           purchased: lm[i]["purchased"],
-      //           date: lm[i]["date"],
-      //           name: lm[i]["title"],
-      //           author: lm[i]["author"],
-      //           publisher: p,
-      //           genre: g,
-      //           comment: lm[i]["memo"],
-      //         );
-      //         if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-      //         logger.i("ListTile changed?");
-      //       },
-      //     ),
-      //   );
-      //   logger.i("listBooks4() i=$i --- $lw");
-      // }
-      List<Widget> lw = [];
-      if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
-      return lw;
+      logger.i("listPublisherPurchased() lm.length ${lm.length} lm $lm");
     }
+
+    logger.i("listPublisherPurchased() lm $lm");
+    List<Widget> lw = [];
+    if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
+    return lw;
   }
 }
 
@@ -458,7 +432,7 @@ class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooks
   Future<List<Widget>> getData() async {
     logger.i("_ListPurchasedBooksScreenState called.");
     await Future.delayed(const Duration(seconds: 1));
-    return await listBooks5(publisherID: widget.pulisherID, isChecked: widget.isChecked);
+    return await listrawSelectWherePurchasedGenre(publisherID: widget.pulisherID, isChecked: widget.isChecked);
   }
 
   @override
@@ -472,17 +446,6 @@ class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooks
         PopupMenuButton(
           itemBuilder: (BuildContext context) {
             return purchasedBooksByGenre();
-            // return [
-            //   PopupMenuItem(
-            //     value: 1,
-            //     child: Text('Item 1'),
-            //     onTap: () {
-            //       ListBookByGenreRoute(genre: '経済', isChecked: true).go(context);
-            //     },
-            //   ),
-            //   const PopupMenuItem(value: 2, child: Text('Item 2')),
-            //   const PopupMenuItem(value: 3, child: Text('Item 3')),
-            // ];
           },
         ),
       ],
@@ -514,7 +477,6 @@ class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooks
       result.add(
         PopupMenuItem(
           onTap: () async {
-            // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
             // logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
             if (mounted) ListBookByGenreRoute(genre: g.name, isChecked: true).push(context);
           },
@@ -522,67 +484,22 @@ class _ListPurchasedBooksByPublisherScreenState extends State<ListPurchasedBooks
         ),
       );
     }
-    // result = [
-    //   PopupMenuItem(
-    //     onTap: () async {
-    //       // DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-    //       // logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
-    //       if (mounted) ListBookByGenreRoute(genre: "経済", isChecked: true).push(context);
-    //     },
-    //     child: Text("abc"),
-    //   ),
-    // ];
     logger.i("purchasedBooksByGenre() result $result");
     // return [PopupMenuItem(onTap: () {}, child: Text('')), const PopupMenuItem(child: Text('another work'))];
     return result;
   }
 
-  Future<List<Widget>> listBooks5({required int publisherID, required bool isChecked}) async {
+  Future<List<Widget>> listrawSelectWherePurchasedGenre({required int publisherID, required bool isChecked}) async {
     logger.i("listBooks5() called -- publisherID $publisherID --- isChecked $isChecked");
 
-    if (true) {
-      logger.i("listBooks5() then");
-      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+    logger.i("listrawSelectWherePurchasedGenre() then");
+    DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
 
-      List lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '1');
-      logger.i("listBooks5() lm.length ${lm.length} lm $lm");
-      // List<Widget> lw = List.empty(growable: true);
-      // for (int i = 0; i < lm.length; i++) {
-      //   // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-      //   // logger.i("listBooks3() i=$i --- $lw");
-      //   var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-      //   lw.add(
-      //     ListTile(
-      //       title: Text(lm[i]['title']),
-      //       subtitle: Text(apg),
-      //       onTap: () async {
-      //         // DONE: display and change the entry
-      //         List list = await dp.selectByID(id: lm[i]["id"]);
-      //         logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-      //         var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-      //         var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
-
-      //         Book book = Book(
-      //           id: lm[i]["id"],
-      //           purchased: lm[i]["purchased"],
-      //           date: lm[i]["date"],
-      //           name: lm[i]["title"],
-      //           author: lm[i]["author"],
-      //           publisher: p,
-      //           genre: g,
-      //           comment: lm[i]["memo"],
-      //         );
-      //         if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-      //         logger.i("ListTile changed?");
-      //       },
-      //     ),
-      //   );
-      //   logger.i("listBooks5() i=$i --- $lw");
-      // }
-      List<Widget> lw = [];
-      if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
-      return lw;
-    }
+    List lm = await dp.rawSelectWherePurchasedGenre(BookGenre.all.name, '1');
+    logger.i("listrawSelectWherePurchasedGenre() lm.length ${lm.length} lm $lm");
+    List<Widget> lw = [];
+    if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
+    return lw;
   }
 }
 
@@ -601,7 +518,7 @@ class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
   Future<List<Widget>> getData() async {
     logger.i("_ListBooksByGenreScreenState called.");
     await Future.delayed(const Duration(seconds: 1));
-    return await listBooks6(genre: widget.genre, isChecked: widget.isChecked);
+    return await listrawSelectWherePurchasedGenre(genre: widget.genre, isChecked: widget.isChecked);
   }
 
   @override
@@ -610,14 +527,6 @@ class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       //DONE: ジャンル検索対応
       title: Text('購入済み書籍一覧 ${widget.genre}'),
-      // actions: [IconButton(onPressed: () {
-      // actions: [
-      //   PopupMenuButton(
-      //     itemBuilder: (BuildContext context) {
-      //       return purchasedBooksByGenre();
-      //     },
-      //   ),
-      // ],
     ),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
@@ -639,86 +548,37 @@ class _ListBooksByGenreScreenState extends State<ListBooksByGenreScreen> {
     ),
   );
 
-  // List<PopupMenuEntry> purchasedBooksByGenre() {
-  //   logger.i("purchasedBooksByGenre() called.");
-  //   List<PopupMenuEntry> result = [];
-  //   for (var g in BookGenre.values.getRange(0, BookGenre.values.length - 1)) {
-  //     result.add(
-  //       PopupMenuItem(
-  //         onTap: () async {
-  //           DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-  //           logger.i("purchasedBooksByGenre --- ${await dp.rawSelectWherePurchasedGenre(g.name, '1')}");
-  //         },
-  //         child: Text(g.name),
-  //       ),
-  //     );
-  //   }
-  //   // return [PopupMenuItem(onTap: () {}, child: Text('')), const PopupMenuItem(child: Text('another work'))];
-  //   return result;
-  // }
+  // DONE: rename the function
+  Future<List<Widget>> listrawSelectWherePurchasedGenre({required String genre, required bool isChecked}) async {
+    logger.i("listPurchasedGenre() called -- genre $genre --- isChecked $isChecked");
 
-  // TODO: rename the function
-  Future<List<Widget>> listBooks6({required String genre, required bool isChecked}) async {
-    logger.i("listBooks6() called -- genre $genre --- isChecked $isChecked");
+    // DONE: delete if true
+    logger.i("listPurchasedGenre() then");
+    DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
 
-    // TODO: delete if true
-    if (true) {
-      logger.i("listBooks6() then");
-      DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-
-      List lm = await dp.rawSelectWherePurchasedGenre(genre, '1');
-      logger.i("listBooks6() lm.length ${lm.length} lm $lm");
-      // TODO: try to commonalize
-      List<Widget> lw = List.empty(growable: true);
-      for (int i = 0; i < lm.length; i++) {
-        // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-        // logger.i("listBooks3() i=$i --- $lw");
-        var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
-        lw.add(
-          ListTile(
-            title: Text(lm[i]['title']),
-            subtitle: Text(apg),
-            onTap: () async {
-              // DONE: display and change the entry
-              List list = await dp.selectByID(id: lm[i]["id"]);
-              logger.i("ListTile tapped. ${lm[i]["id"]} ${list.runtimeType} $list");
-              var p = Publisher.values[Publisher.values.map((id) => id.name).toList().indexOf(lm[i]["publisher"])];
-              var g = BookGenre.values[BookGenre.values.map((id) => id.name).toList().indexOf(lm[i]["genre"])];
-
-              Book book = Book(
-                id: lm[i]["id"],
-                purchased: lm[i]["purchased"],
-                date: lm[i]["date"],
-                name: lm[i]["title"],
-                author: lm[i]["author"],
-                publisher: p,
-                genre: g,
-                comment: lm[i]["memo"],
-              );
-              if (mounted) ListAndChangeRegisteredBookRoute(book).go(context);
-              // if (mounted) ListBookByGenreRoute(genre: book.genre!.name, isChecked: true);
-              logger.i("ListTile changed?");
-            },
-          ),
-        );
-        logger.i("listBooks6() i=$i --- $lw");
-      }
-      return lw;
-    }
+    List lm = await dp.rawSelectWherePurchasedGenre(genre, '1');
+    logger.i("listPurchasedGenre() lm.length ${lm.length} lm $lm");
+    // DONE: try to commonalize
+    List<Widget> lw = [];
+    if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
+    return lw;
   }
 }
 
-// TODO: change title and subtitle
+// DONE: change title and subtitle
 List<Widget> makeListOfListTileWidget(BuildContext context, List<dynamic> lm, DatabaseProvider dp) {
   List<Widget> lw = List.empty(growable: true);
   for (int i = 0; i < lm.length; i++) {
-    // logger.i("listBooks3() ${lm[i]['id']} --- ${lm[i]['title']} --- ${lm[i]['author']}");
-    // logger.i("listBooks3() i=$i --- $lw");
-    var apg = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['publisher']} ${lm[i]['genre']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+    // logger.i(
+    //   "makeListOfListTileWidget() id ${lm[i]['id']} - title ${lm[i]['title']} - author ${lm[i]['author']} - purchased ${lm[i]['purchased']}- memo ${lm[i]['memo']}",
+    // );
+    // logger.i("makeListOfListTileWidget() i=$i --- $lw");
+    var s4title = "${lm[i]['title']} ${lm[i]['publisher']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+    var s4subtitle = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['genre']} ${lm[i]['memo'] ?? ''}";
     lw.add(
       ListTile(
-        title: Text(lm[i]['title']),
-        subtitle: Text(apg),
+        title: Text(s4title),
+        subtitle: Text(s4subtitle),
         onTap: () async {
           // DONE: display and change the entry
           List list = await dp.selectByID(id: lm[i]["id"]);
