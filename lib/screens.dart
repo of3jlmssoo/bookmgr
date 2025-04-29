@@ -391,16 +391,20 @@ class _ListRegisteredBooksByPublisherScreenState extends State<ListRegisteredBoo
     ),
   );
 
+  // TODO: list all books by pushing all of publishers
   Future<List<Widget>> listPublisherPurchased({required int publisherID, required bool isChecked}) async {
     logger.i("listPublisherPurchased() called -- publisherID $publisherID --- isChecked $isChecked");
 
     logger.i("listPublisherPurchased() publisherID $publisherID isChecked $isChecked");
     DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
-    List lm = [];
+    List<Map> lm = [];
     if (publisherID == Publisher.all.index) {
-      lm = [
-        {"title": "sorry", "publisher": "constructing", "purchased": 0},
-      ];
+      lm = await dp.rawSelectWherePurchasedPublisher(Publisher.all.name, '0');
+      logger.i("listPublisherPurchased() - publisherID $publisherID - lm $lm");
+      // lm = [
+      //   {"title": "sorry", "publisher": "constructing", "purchased": 0},
+
+      // ];
     } else {
       lm =
           isChecked == true

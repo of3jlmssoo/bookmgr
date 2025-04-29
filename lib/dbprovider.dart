@@ -124,6 +124,36 @@ class DatabaseProvider {
     return [];
   }
 
+  Future<List<Map>> rawSelectWherePurchasedPublisher(String publisher, String purchased) async {
+    logger.i("rawSelectWherePurchasedPublisher called");
+    if (db == null) await openDB();
+
+    List inArgs;
+    if (publisher == Publisher.all.name) {
+      inArgs = [purchased] + Publisher.values.getRange(0, Publisher.entries.length - 1).toList().map((g) => g.name).toList();
+    } else {
+      inArgs = [purchased] + [publisher];
+    }
+    // DONE: try and timeout
+    logger.i("rawSelectWherePurchasedPublisher() inArgs $inArgs");
+    var result = <Map<dynamic, dynamic>>[];
+    try {
+      result = await db!
+          .query('bookmgr_tbl', where: 'purchased = ? AND publisher IN (${List.filled(inArgs.length - 1, '?').join(',')})', whereArgs: inArgs)
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+    } on DatabaseException catch (e) {
+      logger.e("rawSelectWherePurchasedPublisher error ${e.toString()}");
+    }
+    logger.i("rawSelectWherePurchasedPublisher ->  ${result.length} $result");
+    return result;
+  }
+
   Future<List<Map>> rawSelectWherePublisherPurchased(String publisher, String purchase) async {
     if (db == null) await openDB();
     try {
@@ -157,10 +187,10 @@ class DatabaseProvider {
     return list;
   }
 
-  Future<List> selectByPublisher({required Publisher publisher}) async {
+  Future<List<Map>> selectByPublisher({required Publisher publisher}) async {
     if (db == null) await openDB();
 
-    List list = [];
+    List<Map> list = [];
 
     try {
       if (publisher == Publisher.all) {
