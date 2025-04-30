@@ -40,6 +40,28 @@ class DatabaseProvider {
     return list;
   }
 
+  Future<void> selectTable() async {
+    if (db == null) await openDB();
+
+    List<Map> list = [];
+    try {
+      list = await db!
+          // .rawQuery('SELECT sql FROM sqlite_schema WHERE name = "bookmgr_tbl"')
+          .rawQuery('SELECT sql FROM sqlite_schema')
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+    } on DatabaseException catch (e) {
+      logger.e("selectByID error ${e.toString()}");
+    }
+    logger.i("selectTable() $list");
+    // return list;
+  }
+
   // DONE: try and timeout
   Future<List> selectByID({required int id}) async {
     if (db == null) await openDB();
@@ -232,12 +254,12 @@ class DatabaseProvider {
     List<Map> list = [];
     try {
       list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
-      logger.i("userquery() length ${list.length}");
-      return list;
+      // logger.i("userquery() length ${list.length} list $list");
+      // return list;
     } on DatabaseException catch (e) {
       logger.e("DP query() error ${e.toString()}");
     }
-    logger.i("userquery() length ${list.length}");
+    logger.i("userquery() length ${list.length} list $list");
     return list;
   }
 
@@ -292,6 +314,20 @@ class DatabaseProvider {
       logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
     } on DatabaseException catch (e) {
       logger.e("DP update by id() error ${e.toString()}");
+    }
+  }
+
+  Future<void> clipBoardDataInserts(List list) async {
+    if (db == null) await openDB();
+    try {
+      await db!.transaction((txn) async {
+        for (var l in list) {
+          logger.i("clipBoardDataInserts() $l");
+          await txn.insert('bookmgr_tbl', l);
+        }
+      });
+    } on DatabaseException catch (e) {
+      logger.e("DP testDataInserts() error ${e.toString()}");
     }
   }
 

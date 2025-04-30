@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bookmgr/book.dart';
 import 'package:bookmgr/dbprovider.dart';
 import 'package:bookmgr/maintheme.dart';
@@ -90,7 +92,7 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("書籍管理", style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
-        actions: [MainPopouMenu(), SizedBox(width: 100)],
+        actions: [MainPopouMenu()],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -382,29 +384,67 @@ class MainPopouMenu extends StatelessWidget {
               logger.i("SQlite work tapped");
               SqlWorkRoute().go(context);
             },
-            child: Text('SQLite work'),
+            child: Text('SQL処理'),
           ),
           PopupMenuItem(
             // DONE: copied to clipboard message  (snapbar)
             onTap: () async {
-              logger.i("dump db");
+              logger.i("保存 called");
               var dp = DatabaseProvider(databasefile: databaseName);
               var list = await dp.dumpTable();
-              String result = "";
+              logger.i("保存 list $list");
+              String result = "[";
+              // {id: 147, purchased: 0, date: 2025-04-23, title: マックス・ウェーバーを読む, author: 仲正昌樹, publisher: その他, genre: その他, memo: },
+              //  [{id: 147, purchased: 0, date: 2025-04-23, title: マックス・ウェーバーを読む, author: 仲正昌樹, publisher: その他, genre: その他, memo: }, {id: 148, purchased: 1, date: 2025-04-14, title: タイトル0, author: 著者0, publisher: ブルーバックス, genre: 経済, memo: コメント0}, {id: 149, purchased: 0, date: 2025-04-14, title: タイトル1, author: 著者1, publisher: 講談社現代新書, genre: 宗教, memo: コメント1}, {id: 150, purchased: 1, date: 2025-04-14, title: タイトル2, author: 著者2, publisher: 講談社学術文庫, genre: IT, memo: コメント2}, {id: 151, purchased: 0, date: 2025-04-14, title: タイトル3, author: 著者3, publisher: 岩波新書, genre: 社会, memo: コメント3}, {id: 152, purchased: 1, date: 2025-04-14, title: タイトル4, author: 著者4, publisher: 岩波ジュニア新書, genre: 政治, memo: コメント4}, {id: 153, purchased: 0, date: 2025-04-14, title: タイトル5, author: 著者5,
               for (var l in list) {
+                int pur = l['purchased'];
+                String d = l['date'];
+                String t = l['title'];
+                String a = l['author'];
+                String pub = l['publisher'];
+                String g = l['genre'];
+                String m = l['memo'];
+                String pd = l['purchasedDate'] ?? "";
+                String n =
+                    '{"purchased": $pur, "date": "$d", "title": "$t", "author": "$a", "publisher": "$pub", "genre": "$g", "memo": "$m", "purchasedDate": "$pd" }';
                 // logger.i("--> ${l.toString().runtimeType}");
-                // result = result + l.toString();
-                result = "$result  ${l.toString()}, \n";
+                result = "$result  $n,\n";
               }
-              // logger.i("${await dp.dumpTable()}");
-              // logger.i("${listToString(await dp.dumpTable())}");
+              result = result.substring(0, result.length - 2);
+              result = "$result]";
               Clipboard.setData(ClipboardData(text: result));
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text("クリップボードにコピーしました"), showCloseIcon: true, duration: Duration(seconds: 3)));
-              logger.i("dump db result $result");
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("クリップボードにコピーしました"), showCloseIcon: true, duration: Duration(seconds: 3)));
+              } else {
+                logger.e("保存 context unmounted");
+              }
+              logger.i("保存 result $result");
             },
-            child: Text('dump db'),
+            child: Text('クリップボードへ保存'),
+          ),
+          PopupMenuItem(
+            // DONE: copied to clipboard message  (snapbar)
+            onTap: () async {
+              logger.i("読込 called");
+              final text = await Clipboard.getData('text/plain');
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text("クリップボードからコピーしました"), showCloseIcon: true, duration: Duration(seconds: 3)));
+              } else {
+                logger.e("保存 context unmounted");
+              }
+              logger.i("read clipboard text ${text != null ? text.text : '読込 エラー'}");
+              if (text != null && text.text != null) {
+                List list = json.decode(text.text!).cast<Map>();
+                logger.i("読込 list ${list.runtimeType} $list");
+                var dp = DatabaseProvider(databasefile: databaseName);
+                await dp.clipBoardDataInserts(list);
+              }
+            },
+            child: Text('クリップボードから読込'),
           ),
         ];
       },
