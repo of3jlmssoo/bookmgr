@@ -405,8 +405,9 @@ class MainPopouMenu extends StatelessWidget {
                 String g = l['genre'];
                 String m = l['memo'];
                 String pd = l['purchasedDate'] ?? "";
+                int nx = l['next'] ?? 0;
                 String n =
-                    '{"purchased": $pur, "date": "$d", "title": "$t", "author": "$a", "publisher": "$pub", "genre": "$g", "memo": "$m", "purchasedDate": "$pd" }';
+                    '{"purchased": $pur, "date": "$d", "title": "$t", "author": "$a", "publisher": "$pub", "genre": "$g", "memo": "$m", "purchasedDate": "$pd", "next": "$nx" }';
                 // logger.i("--> ${l.toString().runtimeType}");
                 result = "$result  $n,\n";
               }

@@ -18,6 +18,7 @@ abstract class Book with _$Book {
     BookGenre? genre,
     String? comment,
     String? purchasedDate,
+    int? next,
   }) = _Book;
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);

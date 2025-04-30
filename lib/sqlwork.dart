@@ -47,11 +47,11 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         onPressed: () async {
           logger.i("${await dp.userquery()}");
         },
-        child: Text('table info'),
+        child: Text('selet *'),
       ),
       TextButton(
         onPressed: () async {
-          await dp.query2();
+          logger.i("${await dp.query2()}");
         },
         child: Text('query2'),
       ),

@@ -253,7 +253,17 @@ class DatabaseProvider {
     if (db == null) await openDB();
     List<Map> list = [];
     try {
-      list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo']);
+      // 'CREATE TABLE bookmgr_tbl(id INTEGER,
+      //purchased INTEGER,
+      //date TEXT,
+      //title TEXT,
+      //author TEXT,
+      //publisher TEXT,
+      //genre TEXT,
+      //memo Text,
+      //purchasedDate Text,
+      //next INTEGER,PRIMARY KEY(id  AUTOINCREMENT))',
+      list = await db!.query('bookmgr_tbl', columns: ['id', 'purchased', 'date', 'title', 'author', 'publisher', 'genre', 'memo', 'purchasedDate']);
       // logger.i("userquery() length ${list.length} list $list");
       // return list;
     } on DatabaseException catch (e) {
@@ -286,6 +296,7 @@ class DatabaseProvider {
     String? genre,
     String comment = "",
     String purchasedDate = "",
+    int next = 0,
   }) async {
     if (db == null) await openDB();
     try {
@@ -307,11 +318,11 @@ class DatabaseProvider {
       //PRIMARY KEY(id  AUTOINCREMENT))',
 
       int count = await db!.rawUpdate(
-        'UPDATE bookmgr_tbl SET purchased=?, date=?, title=?, author=?, publisher=?, genre=?, memo=?, purchasedDate=? WHERE id=?',
-        [purchased, inputDate, title, author, publisher, genre, comment, purchasedDate, id],
+        'UPDATE bookmgr_tbl SET purchased=?, date=?, title=?, author=?, publisher=?, genre=?, memo=?, purchasedDate=?, next=? WHERE id=?',
+        [purchased, inputDate, title, author, publisher, genre, comment, purchasedDate, next, id],
       );
 
-      logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment $id");
+      logger.i("update by id count $count $purchased $inputDate $title $author $publisher $genre $comment, $next, $id");
     } on DatabaseException catch (e) {
       logger.e("DP update by id() error ${e.toString()}");
     }
@@ -415,7 +426,7 @@ class DatabaseProvider {
     if (db == null) await openDB();
     try {
       await db!.execute(
-        'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text, purchasedDate Text,PRIMARY KEY(id  AUTOINCREMENT))',
+        'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT, title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text, purchasedDate Text, next INTEGER,PRIMARY KEY(id  AUTOINCREMENT))',
       );
     } on DatabaseException catch (e) {
       logger.e("createTables() error ${e.toString()}");

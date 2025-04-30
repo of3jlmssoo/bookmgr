@@ -44,7 +44,8 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
   final TextEditingController genreController = TextEditingController();
 
   late Book b = widget.book;
-  late bool? isChecked = b.purchased == 1;
+  late bool? isPurchased = b.purchased == 1;
+  late bool? isNext = b.next == 1;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -143,13 +144,26 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
             children: [
               Text("購入済"),
               Checkbox(
-                value: isChecked,
+                value: isPurchased,
                 onChanged: (bool? value) {
-                  logger.i("list and change the book Checkbox value $value");
+                  logger.i("書籍情報 購入済み Checkbox value $value");
                   setState(() {
-                    isChecked = value;
+                    isPurchased = value;
                     b = b.copyWith(purchased: value == true ? 1 : 0);
                     if (value == true) b = b.copyWith(purchasedDate: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+                  });
+                },
+              ),
+              SizedBox(width: 10),
+              Text("次回購入候補"),
+              Checkbox(
+                value: isNext,
+                onChanged: (bool? value) {
+                  logger.i("書籍情報 次回購入候補 Checkbox value $value");
+                  setState(() {
+                    isNext = value;
+                    b = b.copyWith(next: value == true ? 1 : 0);
+                    // if (value == true) b = b.copyWith(purchasedDate: DateFormat('yyyy-MM-dd').format(DateTime.now()));
                   });
                 },
               ),
@@ -179,6 +193,7 @@ class _ListAndChangeeRegisteredBookState extends State<ListAndChangeeRegisteredB
                         genre: b.genre?.name ?? "",
                         comment: b.comment ?? "",
                         purchasedDate: b.purchasedDate ?? "",
+                        next: b.next ?? 0,
                       );
                       nameController.clear();
                       authorController.clear();
@@ -578,7 +593,7 @@ List<Widget> makeListOfListTileWidget(BuildContext context, List<dynamic> lm, Da
     //   "makeListOfListTileWidget() id ${lm[i]['id']} - title ${lm[i]['title']} - author ${lm[i]['author']} - purchased ${lm[i]['purchased']}- memo ${lm[i]['memo']}",
     // );
     // logger.i("makeListOfListTileWidget() i=$i --- $lw");
-    var s4title = "${lm[i]['title']} ${lm[i]['publisher']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"}";
+    var s4title = "${lm[i]['title']} ${lm[i]['publisher']} ${lm[i]['purchased'] == 0 ? "" : "購入済み"} ${lm[i]['next'] == 1 ? "← 次回購入候補!" : ""}";
     var s4subtitle = "${lm[i]['id'].toString()} ${lm[i]['author']} ${lm[i]['genre']} ${lm[i]['memo'] ?? ''}";
     lw.add(
       ListTile(
@@ -600,6 +615,8 @@ List<Widget> makeListOfListTileWidget(BuildContext context, List<dynamic> lm, Da
             publisher: p,
             genre: g,
             comment: lm[i]["memo"],
+            purchasedDate: lm[i]["purchasedDate"],
+            next: lm[i]["next"],
           );
           if (context.mounted) ListAndChangeRegisteredBookRoute(book).go(context);
           logger.i("ListTile changed?");
