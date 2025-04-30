@@ -145,53 +145,53 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Row inputBookDropDownMenu(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(width: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            // backgroundColor: Colors.grey.shade500,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            side: BorderSide(color: Colors.black),
-          ),
-          onPressed:
-              () => {
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      height: 200,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Text('Modal BottomSheet'),
-                            TextFormField(
-                              // The validator receives the text that the user has entered.
-                              decoration: const InputDecoration(labelText: "書籍名"),
-                              onSaved: (String? value) {},
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '書籍名を入力してください';
-                                }
-                                return null;
-                              },
-                            ),
-                            ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              },
-          child: Text("入力", style: TextStyle(fontSize: 15, color: Colors.black)),
-        ),
-      ],
-    );
-  }
+  // Row inputBookDropDownMenu(BuildContext context) {
+  //   return Row(
+  //     children: [
+  //       SizedBox(width: 20),
+  //       ElevatedButton(
+  //         style: ElevatedButton.styleFrom(
+  //           // backgroundColor: Colors.grey.shade500,
+  //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  //           side: BorderSide(color: Colors.black),
+  //         ),
+  //         onPressed:
+  //             () => {
+  //               showModalBottomSheet<void>(
+  //                 context: context,
+  //                 builder: (BuildContext context) {
+  //                   return SizedBox(
+  //                     height: 200,
+  //                     child: Center(
+  //                       child: Column(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         mainAxisSize: MainAxisSize.min,
+  //                         children: <Widget>[
+  //                           const Text('Modal BottomSheet'),
+  //                           TextFormField(
+  //                             // The validator receives the text that the user has entered.
+  //                             decoration: const InputDecoration(labelText: "書籍名"),
+  //                             onSaved: (String? value) {},
+  //                             validator: (value) {
+  //                               if (value == null || value.isEmpty) {
+  //                                 return '書籍名を入力してください';
+  //                               }
+  //                               return null;
+  //                             },
+  //                           ),
+  //                           ElevatedButton(child: const Text('Close BottomSheet'), onPressed: () => Navigator.pop(context)),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //             },
+  //         child: Text("入力", style: TextStyle(fontSize: 15, color: Colors.black)),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   List<Widget> listGenre(BuildContext context, bool isChecked) {
     List<Widget> result = [];
