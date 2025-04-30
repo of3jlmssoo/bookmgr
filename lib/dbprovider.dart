@@ -345,14 +345,6 @@ class DatabaseProvider {
     if (inputDate == "") inputDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     try {
-      // await testdatainserts(txn);
-      // var purchased = 0;
-      // var t = 'マックス・ウェーバーを読む';
-      // var a = "仲正昌樹";
-      // var d = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      // var p = Publisher.koudangshinsho.name;
-      // var g = BookGenre.philosophy.name;
-      // var c = 'こめんと';
       int recordId = await db!.rawInsert(
         'INSERT INTO bookmgr_tbl(purchased, date, title, author, publisher, genre, memo) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [purchased, inputDate, title, author, publisher.name, genre.name, comment],
