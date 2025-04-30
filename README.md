@@ -1,9 +1,10 @@
 
 # 書籍管理アプリ by Flutter
 
+<!-- ![Test Image 1](readme.data/初期画面.png) -->
 気になった本を記録する。
 購入したら購入済みに分類する。
-
+<img width="512" alt="SCR-20230502-nedr" src="readme.data/初期画面.png">
 ## 機能
 
 ### 初期画面
