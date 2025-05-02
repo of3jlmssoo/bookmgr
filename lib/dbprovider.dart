@@ -120,7 +120,31 @@ class DatabaseProvider {
       logger.e("rawSelectWherePurchasedGenre error ${e.toString()}");
     }
     logger.i("rawSelectWherePurchasedGenre ->  ${result.length} $result");
+    // var r2 = <Map<dynamic, dynamic>>[];
+    // result.sort((a, b) => a["title"].compareTo(b["title"]));
+    // return r2;
     return result;
+  }
+
+  Future<List<Map>> rawSelectOrderByTitle() async {
+    if (db == null) await openDB();
+    try {
+      logger.i("rawSelectOrderBy called");
+      List<Map> list = await db!
+          .rawQuery('SELECT * FROM bookmgr_tbl ORDER BY title')
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout:
+                () => <Map<String, dynamic>>[
+                  {"sorry": "timeout"},
+                ],
+          );
+      return list;
+    } on DatabaseException catch (e) {
+      logger.e("rawSelectOrderBy error ${e.toString()}");
+    }
+    logger.e("rawSelectOrderBy return null list");
+    return [];
   }
 
   // DONE: rawquery select by genre and purchased

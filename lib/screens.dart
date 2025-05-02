@@ -627,3 +627,63 @@ List<Widget> makeListOfListTileWidget(BuildContext context, List<dynamic> lm, Da
   }
   return lw;
 }
+
+class ListBooksScreen extends StatefulWidget {
+  ListBooksScreen({super.key}) : dp = DatabaseProvider(databasefile: databaseName);
+  final DatabaseProvider dp;
+
+  @override
+  State<ListBooksScreen> createState() => _ListBooksScreenState();
+}
+
+class _ListBooksScreenState extends State<ListBooksScreen> {
+  _ListBooksScreenState();
+  Future<List<Widget>> getData() async {
+    logger.i("_ListBooksScreenState called.");
+    await Future.delayed(const Duration(seconds: 1));
+    // return await listrawSelectWherePurchasedGenre(genre: widget.genre, isChecked: widget.isChecked);
+    return await listrawSelectOrderByTitle();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //DONE: ジャンル検索対応
+      title: Text('購入済み書籍一覧'),
+    ),
+    body: FutureBuilder<List<Widget>>(
+      future: getData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget>? categories = snapshot.data;
+          // logger.i("FutureBuilder categories -> catgories $categories --- snapshot $snapshot");
+          return ListView.builder(
+            itemCount: categories!.length,
+            itemBuilder: (context, index) {
+              return categories[index];
+            },
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+        }
+        return SizedBox(width: 60, height: 60, child: CircularProgressIndicator());
+      },
+    ),
+  );
+
+  // DONE: rename the function
+  Future<List<Widget>> listrawSelectOrderByTitle() async {
+    logger.i("listrawSelectOrderByTitle() called");
+
+    // DONE: delete if true
+    DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+
+    List lm = await dp.rawSelectOrderByTitle();
+    logger.i("listrawSelectOrderByTitle() lm.length ${lm.length} lm $lm");
+    // DONE: try to commonalize
+    List<Widget> lw = [];
+    if (mounted) lw = makeListOfListTileWidget(context, lm, dp);
+    return lw;
+  }
+}

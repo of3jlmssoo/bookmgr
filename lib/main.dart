@@ -387,6 +387,13 @@ class MainPopouMenu extends StatelessWidget {
             child: Text('SQL処理'),
           ),
           PopupMenuItem(
+            onTap: () {
+              logger.i("Order by Title");
+              ListBookOrderByTitleRoute().push(context);
+            },
+            child: Text('Order by Title'),
+          ),
+          PopupMenuItem(
             // DONE: copied to clipboard message  (snapbar)
             onTap: () async {
               logger.i("保存 called");

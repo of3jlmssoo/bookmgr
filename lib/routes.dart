@@ -81,3 +81,10 @@ class ListBookByGenreRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => ListBooksByGenreScreen(genre: genre, isChecked: isChecked);
 }
+
+@TypedGoRoute<ListBookOrderByTitleRoute>(path: '/listbooksorderbytitle')
+class ListBookOrderByTitleRoute extends GoRouteData {
+  ListBookOrderByTitleRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) => ListBooksScreen();
+}

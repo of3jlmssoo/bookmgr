@@ -15,6 +15,7 @@ List<RouteBase> get $appRoutes => [
   $listAndChangeRegisteredBookRoute,
   $listPurchasedBookByPublisherRoute,
   $listBookByGenreRoute,
+  $listBookOrderByTitleRoute,
 ];
 
 RouteBase get $listGenre => GoRouteData.$route(
@@ -230,6 +231,28 @@ extension $ListBookByGenreRouteExtension on ListBookByGenreRoute {
     '/listbooksbygenre',
     queryParams: {'genre': genre, 'is-checked': isChecked.toString()},
   );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $listBookOrderByTitleRoute => GoRouteData.$route(
+  path: '/listbooksorderbytitle',
+
+  factory: $ListBookOrderByTitleRouteExtension._fromState,
+);
+
+extension $ListBookOrderByTitleRouteExtension on ListBookOrderByTitleRoute {
+  static ListBookOrderByTitleRoute _fromState(GoRouterState state) =>
+      ListBookOrderByTitleRoute();
+
+  String get location => GoRouteData.$location('/listbooksorderbytitle');
 
   void go(BuildContext context) => context.go(location);
 
