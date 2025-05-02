@@ -333,7 +333,7 @@ class DatabaseProvider {
     try {
       await db!.transaction((txn) async {
         for (var l in list) {
-          logger.i("clipBoardDataInserts() $l");
+          // logger.i("clipBoardDataInserts() $l");
           await txn.insert('bookmgr_tbl', l);
         }
       });

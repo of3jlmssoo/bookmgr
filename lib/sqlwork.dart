@@ -1,6 +1,7 @@
 import 'package:bookmgr/consts.dart';
 import 'package:bookmgr/dbprovider.dart';
 import 'package:bookmgr/routes.dart';
+import 'package:bookmgr/testdatacreate.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -102,7 +103,53 @@ Center sqlWorkBody(BuildContext context, DatabaseProvider dp) => Center(
         },
         child: Text('ListBookByGenreRoute'),
       ),
+      TextButton(
+        onPressed: () async {
+          // 'CREATE TABLE bookmgr_tbl(id INTEGER, purchased INTEGER, date TEXT,
+          //  title TEXT, author TEXT, publisher TEXT, genre TEXT, memo Text,
+          //  purchasedDate Text, next INTEGER,PRIMARY KEY(id  AUTOINCREMENT))',
+
+          var result = createData();
+          logger.i("$result");
+          DatabaseProvider dp = DatabaseProvider(databasefile: databaseName);
+          await dp.clipBoardDataInserts(result);
+
+          // for (int i = 0; i < 100; i++) {
+          //   var d = getdate();
+          //   var p = getpurchased();
+
+          //   logger.i(
+          //     "$p $d ${gettitle()} ${getname()} ${getpublisher()} ${getgenre()} ${p == 1 ? getpurchaseddate(d) : ""} ${p == 0 ? getnext() : 0}",
+          //   );
+          // }
+        },
+        child: Text('create test data'),
+      ),
       ElevatedButton(onPressed: () => context.push('/'), child: const Text('Go back to the Home screen')),
     ],
   ),
 );
+
+List<Map<String, dynamic>> createData() {
+  List<Map<String, dynamic>> result = [];
+  // {"purchased": 1, "date": "2025-04-14", "title": "タイトル0TITLETAITORU完成かな", "author": "著者0CHOHACHOSHANAME", "publisher": "ブルーバックス", "genre": "経済", "memo": "コメント0", "purchasedDate": "", "next": "0" },
+
+  for (int i = 0; i < 100; i++) {
+    var d = getdate();
+    var p = getpurchased();
+
+    result.add({
+      "purchased": p,
+      "date": getdate(),
+      "title": gettitle(),
+      "author": getname(),
+      "publisher": getpublisher(),
+      "genre": getgenre(),
+      "memo": "コメントドラフト",
+      "purchasedDate": p == 1 ? getpurchaseddate(d) : "",
+      "next": p == 0 ? getnext() : 0,
+    });
+  }
+  logger.i("createData() $result");
+  return result;
+}
