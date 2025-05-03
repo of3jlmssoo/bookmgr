@@ -650,7 +650,7 @@ class _ListBooksScreenState extends State<ListBooksScreen> {
     appBar: AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       //DONE: ジャンル検索対応
-      title: Text('購入済み書籍一覧'),
+      title: Text('全書籍一覧(タイトルで並べかえ)'),
     ),
     body: FutureBuilder<List<Widget>>(
       future: getData(),
